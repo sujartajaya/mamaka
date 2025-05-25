@@ -1,0 +1,100 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container-01
+    working_dir: /home
+    volumes:
+      - ./mysql/dbconfig:/home
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      TZ: "Asia/Makassar"
+      MYSQL_ROOT_PASSWORD: password
+    restart: unless-stopped
+    networks:
+      - localnet
+
+  freeradius:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: my-radius-image-01
+    container_name: my-radius-container-01
+    depends_on:
+      - mysql
+    ports:
+      - 1812:1812/udp
+      - 1813:1813/udp
+    #volumes:
+    #  - ./freeradius/logs:/var/log/freeradius
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Makassar
+    networks:
+      - localnet
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: my-phpmyadmin-container-01
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mysql
+      - TZ=Asia/Makassar
+    networks:
+      - localnet
+
+  radtest:
+    build: ./radtest
+    container_name: my-radtest-container-01
+    depends_on:
+      - freeradius
+    restart: always
+    networks:
+      - localnet
+    tty: true
+
+  php:
+    build:
+      args:
+        user: radius
+        uid: 1000
+      context: ./php
+      dockerfile: Dockerfile
+    image: my-php-image-01
+    container_name: my-php-container-01
+    restart: unless-stopped
+    working_dir: /var/www/
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: radius
+      DB_PORT: 3306
+      DB_CONNECTION_LIMIT: 10
+      TZ: "Asia/Makassar"
+    volumes:
+      - ./laravel/src:/var/www
+      - ./nginx/conf:/etc/nginx/conf.d/
+    networks:
+      - localnet
+
+  nginx:
+    image: nginx:alpine
+    container_name: my-nginx-container-01
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Makassar
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./laravel/src:/var/www
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./nginx/certs:/etc/nginx/ssl
+    networks:
+      - localnet
+
+networks:
+  localnet:
+    driver: bridge
