@@ -29,9 +29,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/tools', function () {return view('home.tool');})->name('tools');
     Route::get('/mac', function () { return view('routeros.macbinding'); })->name('mac');
     Route::get('/macbinding', [RouterOsController::class,'showMacBind'])->name('macbinding');
-    Route::post('/mac', [RouterOsController::class,'addMaccBinding']);
-    Route::get('/mac/{id}', [RouterOsController::class,'getMacAdd']);
-    Route::post('/mac/{id}', [RouterOsController::class,'updateMacBinding']);
+    Route::get('/activeusers',function () { return view('routeros.activeuser');})->name('activeuser');
+    Route::get('/getactiveusers',[RouterOsController::class,'showActiveUser'])->name('get.active.users');
+    Route::post('/mac', [RouterOsController::class,'addMaccBinding'])->name('post.mac');
+    Route::get('/mac/{id}', [RouterOsController::class,'getMacAdd'])->name('get.mac.by.id');
+    Route::post('/mac/{id}', [RouterOsController::class,'updateMacBinding'])->name('update.mac.by.id');
+    Route::delete('/mac/{id}', [RouterOsController::class,'deleteMacBinding'])->name('delete.mac.by.id');
+    Route::get('/guest/{mac}', [GuestController::class,'show'])->name('show.guest.by.mac');
+    Route::get('/user/profile',[RouterOsController::class,'getUserProfiles'])->name('get.user.profile');
+    Route::get('/profiles', function () { return view('routeros.userprofile'); })->name('user.profile');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -45,8 +51,8 @@ Route::get('/testgetusers', [UserController::class,'getUsers']);
 Route::get('/table', function () { return view('test.table');});
 Route::get('/card', function () { return view('test.card');});
 Route::get('/active', [RouterOsController::class,'showActiveUser']);
-
-
+Route::get('/userprofile',[RouterOsController::class,'showUserProfile']);
+Route::get('/frame', function () { return view('test.frame'); });
 
 
 

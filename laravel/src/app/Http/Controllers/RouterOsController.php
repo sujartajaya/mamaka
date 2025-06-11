@@ -77,7 +77,7 @@ class RouterOsController extends Controller
                     ];
 
                     // return view('admin.dashboardv2',compact('data'));
-                    return respone()->json($data);
+                    return response()->json($data);
             }
     }
 
@@ -111,11 +111,13 @@ class RouterOsController extends Controller
                 ]);
                 $data['error'] = false;
                 $data['msg'] = "Mac Address has been added";
-                return response()->json($data,201);
+                // return response()->json($data,201);
+                return redirect()->route('mac');
             } else {
                 $data['error'] = true;
                 $data['msg'] = "Error connect to gateway!";
-                return response()->json($data,200);
+                // return response()->json($data,200);
+                return redirect()->route('mac')->with(['messages'=>$data['msg']]);
             }
         }  else {
             $data['error'] = true;
@@ -218,7 +220,7 @@ class RouterOsController extends Controller
                     ];
 
                     // return view('admin.dashboardv2',compact('data'));
-                    return respone()->json($data);
+                    return response()->json($data);
         } 
     }
 
@@ -239,9 +241,7 @@ class RouterOsController extends Controller
                 'title' => 'Active User',
                 'activeuser' => $system,
             ];
-            //dd($data);
-            // return view('admin.dashboardv2',compact('data'));
-            //dd($data);
+            // return view('routeros.activeuser',compact('data'));
             return response()->json($data);
 
                 } else {
@@ -250,10 +250,64 @@ class RouterOsController extends Controller
                         'title' => 'User Hotspot Profile',
                         'msg' => 'Error connect to mikrotik',
                     ];
-
-                    // return view('admin.dashboardv2',compact('data'));
-                    return respone()->json($data);
+                    // return view('routeros.activeuser',compact('data'));
+                    return response()->json($data);
         }
     }
     
+
+    public function deleteMacBinding(Request $request)
+    {
+        $ip = env('MIKROTIK_IP');
+        $user = env('MIKROTIK_USER');
+        $password = env('MIKROTIK_PASSWORD');
+        $API = new RouterOs();
+        $API->debug = false;
+
+        if ($API->connect($ip, $user, $password)) {
+            $API->comm("/ip/hotspot/ip-binding/remove",[
+                '.id' => $request->id
+            ],);
+            $data['error'] = false;
+            $data['msg'] = "Mac Address has been deleted!";
+            // return response()->json($data,200);
+            return redirect()->route('mac');
+        } else {
+            $data['error'] = true;
+            $data['msg'] = "Error connected to gateway!";
+            // return response()->json($data,200);
+            return redirect()->route('mac')->with(['messages'=>$data['msg']]);
+        }
+    }
+
+    public function getUserProfiles()
+    {
+        $ip = env('MIKROTIK_IP');
+        $user = env('MIKROTIK_USER');
+        $password = env('MIKROTIK_PASSWORD');
+        $API = new RouterOs();
+        $API->debug = false;
+        $data = [];
+        if ($API->connect($ip, $user, $password)) {
+
+                        $system = $API->comm('/ip/hotspot/user/profile/print');
+
+            $data = [
+                'error' => false,
+                'title' => 'Hotspot User Profiles',
+                'userprofiles' => $system,
+            ];
+            // return view('routeros.activeuser',compact('data'));
+            return response()->json($data,200);
+
+        } else {
+                    $data = [
+                        'error' => true,
+                        'title' => 'User Profile',
+                        'msg' => 'Error connect to mikrotik',
+                    ];
+                    // return view('routeros.activeuser',compact('data'));
+                    return response()->json($data,200);
+        }
+    }
 }

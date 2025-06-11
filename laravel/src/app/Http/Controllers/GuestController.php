@@ -90,9 +90,10 @@ private function getBrowser() {
     /**
      * Display the specified resource.
      */
-    public function show(Guest $guest)
+    public function show(Request $request, $mac)
     {
-        //
+        $guest = Guest::where('mac_add',$mac)->first();
+        return response()->json($guest,200);
     }
 
     /**
