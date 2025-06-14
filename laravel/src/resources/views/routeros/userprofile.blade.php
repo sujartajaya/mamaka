@@ -15,7 +15,7 @@
         <input type="text" id="searchInput" placeholder="Search..."
             class="max-w-sm mn-w-[150px] mb-4 p-2 border border-gray-300 rounded" />
         <button id="btnAddmac"
-            class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-green-200 via-green-400 to-green-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Add</button>
+            class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-green-200 via-green-400 to-green-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" onClick="openModal()">Add</button>
     </div>
     <div
         class="overflow-x-auto flex flex-col w-full max-w-wd bg-white rounded-lg shadow-lg justify-center items-center mt-2">
@@ -42,6 +42,49 @@
         <button id="nextBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Next</button>
     </div>
 </div>
+<!-- Modal Input data -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <!-- Modal Box -->
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+      <h2 class="text-xl font-semibold mb-4">User Profile</h2>
+      
+      <form id="dataForm">
+        <div class="mb-4">
+          <label class="block text-gray-700">Name</label>
+          <input type="text" name="name" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700">Session timeout</label>
+          <input type="text" name="session-timeout" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="00:00:00:00"/>
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700">Rate Limit</label>
+          <input type="text" name="rate-limit" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="RX/TX" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700">Shared Users</label>
+          <input type="text" name="shared-users" rows="3" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1" value="1" />
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button 
+            type="button" 
+            onclick="closeModal()" 
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+</div>
+<!-- End Modal -->
+
 <script>
     const tableBody = document.getElementById('tableBody');
     const pageInfo = document.getElementById('pageInfo');
@@ -51,6 +94,29 @@
     let currentPage = 1;
     let data = [];
     let filteredData = [];
+
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('dataForm');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      form.reset();
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      const values = Object.fromEntries(data.entries());
+      console.log('Data disimpan:', values);
+      closeModal();
+    });
+
 
     function renderTable(page = 1) {
       const start = (page - 1) * rowsPerPage;
