@@ -38,14 +38,6 @@
 						d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
 				</svg>
 			</li>
-			<li><a class="text-sm text-blue-600  font-bold" href="#">About Us</a></li>
-			<li class="text-gray-300">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-					viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-						d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-				</svg>
-			</li>
 			<li><a class="text-sm text-blue-600  font-bold" href="{{ route('getguests') }}">Guests</a></li>
 			<li class="text-gray-300">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
@@ -55,14 +47,6 @@
 				</svg>
 			</li>
 			<li><a class="text-sm text-blue-600  font-bold" href="{{ route('tools') }}">Tools</a></li>
-			<li class="text-gray-300">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-					viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-						d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-				</svg>
-			</li>
-			<li><a class="text-sm text-blue-600  font-bold" href="#">Contact</a></li>
 		</ul>
 		@if(Auth::check())
 		<form id="logout-form" action="{{ route('logout') }}" method="POST">@csrf</form>
@@ -106,19 +90,11 @@
 					</li>
 					<li class="mb-1">
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-							href="#">About Us</a>
-					</li>
-					<li class="mb-1">
-						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('getguests') }}">Guests</a>
 					</li>
 					<li class="mb-1">
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('tools') }}">Tools</a>
-					</li>
-					<li class="mb-1">
-						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-							href="#">Contact</a>
 					</li>
 				</ul>
 			</div>
@@ -132,10 +108,6 @@
 					<a class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-gray-200 hover:bg-gray-100 rounded-xl"
 						href="{{ route('login') }}">Sign in</a>
 					@endif
-
-					<!--
-					<a class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-blue-600 hover:bg-blue-700  rounded-xl" href="#">Sign Up</a>
-					-->
 				</div>
 				<p class="my-4 text-xs text-center text-gray-400">
 					<span>Copyright © 2025</span>

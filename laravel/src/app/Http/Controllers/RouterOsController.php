@@ -310,4 +310,125 @@ class RouterOsController extends Controller
                     return response()->json($data,200);
         }
     }
+
+    public function addUserProfile(Request $request)
+    {
+        $datareq = $request->all();
+        $data = [];
+        $validator = Validator::make($datareq, [
+            'name' => ['required']
+        ]);
+        $session_timeout = ($datareq['session-timeout'] !== null) ? $datareq['session-timeout'] : "00:00:00";
+        $rate_limit = ($datareq['rate-limit'] !== null) ? $datareq['rate-limit'] : "";
+        $shared_users = ($datareq['shared-users'] !== null) ? $datareq['shared-users'] : "1";
+        if ($validator)
+        {
+            if ($validator->fails())
+            {
+                $data['error'] = true;
+                $data['exist'] = false;
+                $data['msg'] = $validator->messages();
+                return response()->json($data,200);
+            } else {
+                $ip = env('MIKROTIK_IP');
+                $user = env('MIKROTIK_USER');
+                $password = env('MIKROTIK_PASSWORD');
+                $API = new RouterOs();
+                $API->debug = false;
+                if ($API->connect($ip, $user, $password)) {
+                    $API->comm('/ip/hotspot/user/profile/add',[
+                        'name'=> $datareq['name'],
+                        'session-timeout' => $session_timeout,
+                        'rate-limit' => $rate_limit,
+                        'shared-users' => $shared_users
+                    ]);
+                    $data['error'] = false;
+                    $data['msg'] = "User profile has been added";
+                    return response()->json($data,200);
+                } else {
+                    $data['error'] = true;
+                    $data['msg'] = "Error connect to gateway!";
+                    return response()->json($data,200);
+                }
+
+            }
+        }
+    }
+
+    public function updateUserProfile(Request $request, $id)
+    {
+        $datareq = $request->all();
+        $data = [];
+        $validator = Validator::make($datareq, [
+            'name' => ['required']
+        ]);
+        $session_timeout = ($datareq['session-timeout'] !== null) ? $datareq['session-timeout'] : "00:00:00";
+        $rate_limit = ($datareq['rate-limit'] !== null) ? $datareq['rate-limit'] : "";
+        $shared_users = ($datareq['shared-users'] !== null) ? $datareq['shared-users'] : "1";
+        if ($validator)
+        {
+            if ($validator->fails())
+            {
+                $data['error'] = true;
+                $data['exist'] = false;
+                $data['msg'] = $validator->messages();
+                return response()->json($data,200);
+            } else {
+                $ip = env('MIKROTIK_IP');
+                $user = env('MIKROTIK_USER');
+                $password = env('MIKROTIK_PASSWORD');
+                $API = new RouterOs();
+                $API->debug = false;
+                if ($API->connect($ip, $user, $password)) {
+                    $API->comm('/ip/hotspot/user/profile/set',[
+                        'id' => $id,
+                        'name'=> $datareq['name'],
+                        'session-timeout' => $session_timeout,
+                        'rate-limit' => $rate_limit,
+                        'shared-users' => $shared_users
+                    ]);
+                    $data['error'] = false;
+                    $data['msg'] = "User profile has been added";
+                    return response()->json($data,200);
+                } else {
+                    $data['error'] = true;
+                    $data['msg'] = "Error connect to gateway!";
+                    return response()->json($data,200);
+                }
+
+            }
+        }
+    }
+
+    public function getUserProfile($id)
+    {
+        $ip = env('MIKROTIK_IP');
+        $user = env('MIKROTIK_USER');
+        $password = env('MIKROTIK_PASSWORD');
+        $API = new RouterOs();
+        $API->debug = false;
+
+        if ($API->connect($ip, $user, $password)) {
+            $getprofile = $API->comm('/ip/hotspot/user/profile/print', [
+                                "?.id" => $id,
+                        ]);
+            $data['error'] = false;
+            $data['userprofile'] = $getprofile;
+            return response()->json($data,200);
+        } else {
+            $data['error'] = true;
+            $data['msg'] = "Error connection to the gateway!";
+            return response()->json($data,200);
+        }
+    }
+
+    public function testPost(Request $request)
+    {
+        $datareq = $request->all();
+        $data = [];
+        $data['error'] = false;
+        $data['req'] = $datareq['shared-users'];
+
+        return response()->json($data,200);
+    }
 }

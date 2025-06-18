@@ -18,7 +18,7 @@ Route::get('/login', function () { $prev_url = url()->previous(); return view('u
 Route::post('/login',[UserController::class,'authtenticate'])->name('authtenticate');
 
 /** user admin type */
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/register', function () { return view('user.register');})->name('register');
     Route::post('/register',[UserController::class,'store'])->name('postregister');
     Route::get('/getusers', [UserController::class,'getUsers'])->name('users');
@@ -37,7 +37,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/mac/{id}', [RouterOsController::class,'deleteMacBinding'])->name('delete.mac.by.id');
     Route::get('/guest/{mac}', [GuestController::class,'show'])->name('show.guest.by.mac');
     Route::get('/user/profile',[RouterOsController::class,'getUserProfiles'])->name('get.user.profile');
+    Route::post('/user/profile',[RouterOsController::class,'addUserProfile'])->name('post.user.profile');
+    Route::post('/user/profile/{id}',[RouterOsController::class,'updateUserProfile']);
     Route::get('/profiles', function () { return view('routeros.userprofile'); })->name('user.profile');
+    Route::get('/profiles/{id}', [RouterOsController::class,'getUserProfile']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -52,7 +55,9 @@ Route::get('/table', function () { return view('test.table');});
 Route::get('/card', function () { return view('test.card');});
 Route::get('/active', [RouterOsController::class,'showActiveUser']);
 Route::get('/userprofile',[RouterOsController::class,'showUserProfile']);
-Route::get('/frame', function () { return view('test.frame'); });
+Route::get('/fetch', function () { return view('test.form'); });
+Route::post('/fetch',[RouterOsController::class,'testPost'])->name('test.post');
+
 
 
 

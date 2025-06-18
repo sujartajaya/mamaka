@@ -48,14 +48,15 @@
     <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
       <h2 class="text-xl font-semibold mb-4">User Profile</h2>
       
-      <form id="dataForm">
+      <form id="dataForm" onsubmit="handleSubmit(event)">
+        @csrf
         <div class="mb-4">
           <label class="block text-gray-700">Name</label>
           <input type="text" name="name" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Session timeout</label>
-          <input type="text" name="session-timeout" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="00:00:00:00"/>
+          <input type="text" name="session-timeout" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1d2h1m"/>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Rate Limit</label>
@@ -109,15 +110,78 @@
       form.reset();
     }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const data = new FormData(form);
-      const values = Object.fromEntries(data.entries());
-      console.log('Data disimpan:', values);
-      closeModal();
-    });
+    // form.addEventListener('submit', async function (e) {
+    //   e.preventDefault();
+    //   const dataForm = new FormData(form);
+    //   try {
+    //     const response = await fetch("<?php echo route('post.user.profile');?>", {
+    //       method: "POST",
+    //       body: dataForm
+    //     });
+    //     const result = await response.json();
+    //     getUserProfiles();
+    //     console.log(result);
+    //   } catch (error) {
+    //     console.error("Gagal:", error);
+    //   }
+    //   closeModal();
+    // });
 
+    async function handleSubmit(event) {
+      event.preventDefault();
 
+      // const form = document.getElementById("myForm");
+      const formData = new FormData(form); // Ambil semua data dari form
+
+      try {
+        const response = await fetch("<?php echo route('post.user.profile');?>", {
+          method: "POST",
+          body: formData // Tidak perlu set Content-Type
+        });
+
+        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
+        console.log(result);
+        getUserProfiles();
+        closeModal();
+      } catch (error) {
+        console.error("Gagal:", error);
+        alert("Terjadi kesalahan saat mengirim data.");
+      }
+    }
+
+    async function handleUpdate(event, id) {
+      event.preventDefault();
+
+      // const form = document.getElementById("myForm");
+      const formData = new FormData(form); // Ambil semua data dari form
+
+      try {
+        const response = await fetch(`"<?php echo route('post.user.profile');?>/${id}"`, {
+          method: "POST",
+          body: formData // Tidak perlu set Content-Type
+        });
+
+        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
+        console.log(result);
+        getUserProfiles();
+        closeModal();
+      } catch (error) {
+        console.error("Gagal:", error);
+        alert("Terjadi kesalahan saat mengirim data.");
+      }
+    }
+
+    async function updateUserProfile(id) {
+      try {
+        const response = await fetch("/profiles/"+id);
+        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
+        console.log(result);
+      } catch (error) {
+        console.error("Gagal:", error);
+        alert("Terjadi kesalahan saat mengirim data.");
+      }
+    }
+    
     function renderTable(page = 1) {
       const start = (page - 1) * rowsPerPage;
       const end = start + rowsPerPage;
@@ -135,7 +199,7 @@
           <td class="px-4 py-2" style="text-align: center;">${row['shared-users']}</td>
           <td class="px-4 py-2">
             <div class="flex space-x-2">
-                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="addMacBinding('${row['id']}')">
+                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="updateUserProfile('${row['.id']}')">
                     Edit
                 </button>
                 <button
