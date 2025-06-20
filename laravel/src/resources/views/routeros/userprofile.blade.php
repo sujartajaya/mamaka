@@ -52,19 +52,19 @@
         @csrf
         <div class="mb-4">
           <label class="block text-gray-700">Name</label>
-          <input type="text" name="name" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <input id="frmname" type="text" name="name" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Session timeout</label>
-          <input type="text" name="session-timeout" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1d2h1m"/>
+          <input id="frmsessiontimeout" type="text" name="session-timeout" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1d2h1m"/>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Rate Limit</label>
-          <input type="text" name="rate-limit" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="RX/TX" />
+          <input id="frmratelimit" type="text" name="rate-limit" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="RX/TX" />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Shared Users</label>
-          <input type="text" name="shared-users" rows="3" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1" value="1" />
+          <input id="frmsharedusers" type="text" name="shared-users" rows="3" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1" value="1" />
         </div>
         <div class="flex justify-end space-x-2">
           <button 
@@ -95,9 +95,15 @@
     let currentPage = 1;
     let data = [];
     let filteredData = [];
+    let edit = false;
+    let id_user = 0;
 
     const modal = document.getElementById('modal');
     const form = document.getElementById('dataForm');
+    const frm_name = document.getElementById('frmname');
+    const frm_sessiontimeout = document.getElementById('frmsessiontimeout');
+    const frm_ratelimit = document.getElementById('frmratelimit');
+    const frm_sharedusers = document.getElementById('frmsharedusers');
 
     function openModal() {
       modal.classList.remove('hidden');
@@ -110,23 +116,7 @@
       form.reset();
     }
 
-    // form.addEventListener('submit', async function (e) {
-    //   e.preventDefault();
-    //   const dataForm = new FormData(form);
-    //   try {
-    //     const response = await fetch("<?php echo route('post.user.profile');?>", {
-    //       method: "POST",
-    //       body: dataForm
-    //     });
-    //     const result = await response.json();
-    //     getUserProfiles();
-    //     console.log(result);
-    //   } catch (error) {
-    //     console.error("Gagal:", error);
-    //   }
-    //   closeModal();
-    // });
-
+   
     async function handleSubmit(event) {
       event.preventDefault();
 
@@ -134,35 +124,21 @@
       const formData = new FormData(form); // Ambil semua data dari form
 
       try {
-        const response = await fetch("<?php echo route('post.user.profile');?>", {
-          method: "POST",
-          body: formData // Tidak perlu set Content-Type
-        });
-
-        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
-        console.log(result);
-        getUserProfiles();
-        closeModal();
-      } catch (error) {
-        console.error("Gagal:", error);
-        alert("Terjadi kesalahan saat mengirim data.");
-      }
-    }
-
-    async function handleUpdate(event, id) {
-      event.preventDefault();
-
-      // const form = document.getElementById("myForm");
-      const formData = new FormData(form); // Ambil semua data dari form
-
-      try {
-        const response = await fetch(`"<?php echo route('post.user.profile');?>/${id}"`, {
-          method: "POST",
-          body: formData // Tidak perlu set Content-Type
-        });
-
-        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
-        console.log(result);
+        if (edit) {
+          const response = await fetch(`/user/profile/${id_user}`, {
+            method: "POST",
+            body: formData // Tidak perlu set Content-Type
+          });
+          // const result = await response.json();
+          // console.log(result);
+        } else {
+          const response = await fetch("<?php echo route('post.user.profile');?>", {
+            method: "POST",
+            body: formData // Tidak perlu set Content-Type
+          });
+        }
+        // const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
+        // console.log(result);
         getUserProfiles();
         closeModal();
       } catch (error) {
@@ -172,10 +148,17 @@
     }
 
     async function updateUserProfile(id) {
+      edit = true;
+      id_user = id;
       try {
         const response = await fetch("/profiles/"+id);
-        const result = await response.json(); // Bisa juga .json() kalau response-nya JSON
-        console.log(result);
+        const result = await response.json(); 
+        frm_name.value = result['userprofile'][0]['name'];
+        frm_sessiontimeout.value = (result['userprofile'][0]['session-timeout'] !== undefined)? result['userprofile'][0]['session-timeout'] : "";
+        frm_ratelimit.value = (result['userprofile'][0]['rate-limit'] !== undefined)? result['userprofile'][0]['rate-limit'] : "";
+        frm_sharedusers.value = result['userprofile'][0]['shared-users'];
+        openModal();
+        // console.log(result['userprofile'][0]['name']);
       } catch (error) {
         console.error("Gagal:", error);
         alert("Terjadi kesalahan saat mengirim data.");
@@ -216,6 +199,11 @@
       pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(filteredData.length / rowsPerPage)}`;
     }
 
+    function updatePaginationButtons() {
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage === Math.ceil(filteredData.length / rowsPerPage);
+    }
+
     async function getUserProfiles() {
         try {
             const response = await fetch('<?php echo route('get.user.profile'); ?>');
@@ -223,6 +211,29 @@
             data =  userprofiles['userprofiles'];
             filteredData =  [...data];
             renderTable();
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredData.length / rowsPerPage)) {
+                    currentPage++;
+                    renderTable(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                filteredData = data.filter(item =>
+                    item['name'].toLowerCase().includes(searchTerm)
+                );
+                currentPage = 1;
+                renderTable(currentPage);
+                updatePaginationButtons();
+            });
         } catch (error) {
             console.error('Error get data: ', error);
         }

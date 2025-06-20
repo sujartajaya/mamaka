@@ -381,14 +381,14 @@ class RouterOsController extends Controller
                 $API->debug = false;
                 if ($API->connect($ip, $user, $password)) {
                     $API->comm('/ip/hotspot/user/profile/set',[
-                        'id' => $id,
+                        '.id' => $id,
                         'name'=> $datareq['name'],
                         'session-timeout' => $session_timeout,
                         'rate-limit' => $rate_limit,
                         'shared-users' => $shared_users
                     ]);
                     $data['error'] = false;
-                    $data['msg'] = "User profile has been added";
+                    $data['msg'] = "User profile has been updated";
                     return response()->json($data,200);
                 } else {
                     $data['error'] = true;
