@@ -169,6 +169,7 @@
             deleteMacBingding(id)
         }
     }
+    
     async function deleteMacBingding(id) {
         try {
             const url = `{{ route('post.mac')}}/${id}`;

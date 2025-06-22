@@ -1,4 +1,7 @@
 @extends('layout.appv1')
+@section('jsscript')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endsection
 @section('content')
 <div class="container mx-auto bg-white p-6 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-4">User Profiles</h2>
@@ -121,7 +124,35 @@
       form.reset();
     }
 
-   
+    async function confirmDelete(id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action cannot be undo!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626', // Tailwind red-600
+            cancelButtonColor: '#6b7280', // Tailwind gray-500
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        });
+        if (result.isConfirmed) {
+          deleteUserprofile(id)
+          getUserProfiles();
+        }
+    }
+
+    async function deleteUserprofile(id) {
+        try {
+            const url = `{{ route('user.profile')}}/${id}`;
+            const frmmac = document.getElementById('frmdelete');
+            frmmac.method = 'POST';
+            frmmac.action = url;
+            frmmac.submit();
+        } catch (error) {
+            console.error('Error get data: ', error);
+        }
+    }
+
     async function handleSubmit(event) {
       event.preventDefault();
 

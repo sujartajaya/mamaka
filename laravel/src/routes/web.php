@@ -41,6 +41,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/user/profile/{id}',[RouterOsController::class,'updateUserProfile']);
     Route::get('/profiles', function () { return view('routeros.userprofile'); })->name('user.profile');
     Route::get('/profiles/{id}', [RouterOsController::class,'getUserProfile']);
+    Route::delete('/profiles/{id}', [RouterOsController::class,'deleteUserprofile']);
+
 });
 
 Route::middleware(['auth'])->group(function () {

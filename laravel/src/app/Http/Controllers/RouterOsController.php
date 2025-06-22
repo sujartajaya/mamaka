@@ -436,14 +436,14 @@ class RouterOsController extends Controller
             ],);
             $data['error'] = false;
             $data['msg'] = "User profile` has been deleted!";
-            return response()->json($data,200);
-            // return redirect()->route('mac');
+            // return response()->json($data,200);
+            return redirect()->route('user.profile');
         } else {
             $data['error'] = true;
             $data['msg'] = "Error connected to gateway!";
-            return response()->json($data,200);
-            // return redirect()->route('mac')->with(['messages'=>$data['msg']]);
+            // return response()->json($data,200);
+            return redirect()->route('user.profile')->with(['messages'=>$data['msg']]);
         }
-
+    }
     
 }
