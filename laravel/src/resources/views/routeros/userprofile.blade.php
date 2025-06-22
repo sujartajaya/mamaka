@@ -85,7 +85,12 @@
     </div>
 </div>
 <!-- End Modal -->
-
+<!-- form delete -->
+<form id="frmdelete">
+    @csrf
+    <input type="hidden" name="_method" value="delete" />
+</form>
+<!-- end form delete -->
 <script>
     const tableBody = document.getElementById('tableBody');
     const pageInfo = document.getElementById('pageInfo');

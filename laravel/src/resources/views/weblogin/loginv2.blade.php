@@ -66,7 +66,7 @@
     <form name="loginweb" action="<?php if (isset($data['link-login'])) { echo $data['link-login']; } ?>" method="POST">
         <input type="hidden" name="username" value="<?php if($guest) { echo $guest['username']; }?>" />
         <input type="hidden" name="password" value="<?php if($guest) { echo $guest['password']; }?>" />
-        <input type="hidden" name="dst" value="{{ $data['link-orig'] }}" />
+        <input type="hidden" name="dst" value="https://ovolohotels.com/mamaka/long-stay/?gad_source=1&gad_campaignid=10952323866&gbraid=0AAAAADv4kheTZBXGJ3XMD38kkB7ImgCQD&gclid=Cj0KCQjwjdTCBhCLARIsAEu8bpI54UUiTSvQEVr5cIV1WbWTi7Cz5CuVRrphyl-Xlx3sKDEYi9eqx6oaAiglEALw_wcB" />
         <input type="hidden" name="popup" value="true" />
     </form>
 
@@ -92,20 +92,31 @@
 
             let url = "<?php echo route('country'); ?>";
             try {
-                 await axios
-                        .get(url)
-                        .then((response) => {
-                            const countries = response.data;
-                            countries.forEach((country) => {
-                                let newOption = document.createElement("option");
-                                let optionText = country.country_name;
-                                let optionValue = country.id;
-                                newOption.text = optionText;
-                                newOption.value = optionValue;
-                                option.appendChild(newOption);
-                            });
+                //  await axios
+                //         .get(url)
+                //         .then((response) => {
+                //             const countries = response.data;
+                //             countries.forEach((country) => {
+                //                 let newOption = document.createElement("option");
+                //                 let optionText = country.country_name;
+                //                 let optionValue = country.id;
+                //                 newOption.text = optionText;
+                //                 newOption.value = optionValue;
+                //                 option.appendChild(newOption);
+                //             });
                             
-                        })
+                //         })
+                const response = await fetch(url);
+                const countries = await response.json();
+                countries.forEach((country) => {
+                    let newOption = document.createElement("option");
+                    let optionText = country.country_name;
+                    let optionValue = country.id;
+                    newOption.text = optionText;
+                    newOption.value = optionValue;
+                    option.appendChild(newOption);
+                });
+
             } catch (err) {
                 console.log(err)
             }

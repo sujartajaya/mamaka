@@ -422,13 +422,28 @@ class RouterOsController extends Controller
         }
     }
 
-    public function testPost(Request $request)
+    public function deleteUserprofile(Request $request)
     {
-        $datareq = $request->all();
-        $data = [];
-        $data['error'] = false;
-        $data['req'] = $datareq['shared-users'];
+        $ip = env('MIKROTIK_IP');
+        $user = env('MIKROTIK_USER');
+        $password = env('MIKROTIK_PASSWORD');
+        $API = new RouterOs();
+        $API->debug = false;
 
-        return response()->json($data,200);
-    }
+        if ($API->connect($ip, $user, $password)) {
+            $API->comm("/ip/hotspot/user/profile/remove",[
+                '.id' => $request->id
+            ],);
+            $data['error'] = false;
+            $data['msg'] = "User profile` has been deleted!";
+            return response()->json($data,200);
+            // return redirect()->route('mac');
+        } else {
+            $data['error'] = true;
+            $data['msg'] = "Error connected to gateway!";
+            return response()->json($data,200);
+            // return redirect()->route('mac')->with(['messages'=>$data['msg']]);
+        }
+
+    
 }
