@@ -23,8 +23,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/register',[UserController::class,'store'])->name('postregister');
     Route::get('/getusers', [UserController::class,'getUsers'])->name('users');
     // Route::get('/users', function () { return view('user.users');});
-    Route::get('/users', [UserController::class,'userlists']);
-    Route::post('/user',[UserController::class,'save'])->name('adduser');
+    Route::get('/getusers', [UserController::class,'allUsers'])->name('get.admin.users');
+    Route::get('/users', function () {return view('user.userv1');})->name('show.admin.users');
+    Route::post('/user',[UserController::class,'storeNewUser'])->name('store.admin.user');
     Route::get('/guests', [WebloginController::class,'getGuests'])->name('getguests');
     Route::get('/tools', function () {return view('home.tool');})->name('tools');
     Route::get('/mac', function () { return view('routeros.macbinding'); })->name('mac');
@@ -54,10 +55,10 @@ Route::get('/testusers', function () { return view('user.users');});
 Route::get('/testguest',[GuestController::class,'displaydata']);
 Route::get('/testgetusers', [UserController::class,'getUsers']);
 Route::get('/table', function () { return view('test.table');});
-Route::get('/card', function () { return view('test.card');});
+Route::get('/modal', function () { return view('test.modal');});
 Route::get('/active', [RouterOsController::class,'showActiveUser']);
 Route::get('/userprofile',[RouterOsController::class,'showUserProfile']);
-Route::get('/fetch', function () { return view('test.form'); });
+Route::get('/testreg', function () { return view('user.registerv1'); });
 Route::post('/fetch',[RouterOsController::class,'testPost'])->name('test.post');
 
 

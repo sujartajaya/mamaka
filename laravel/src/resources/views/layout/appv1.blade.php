@@ -56,7 +56,7 @@
 						d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
 				</svg>
 				</li>
-				<li><a class="text-sm text-blue-600  font-bold" href="{{ route('tools') }}">User Admin</a></li>
+				<li><a class="text-sm text-blue-600  font-bold" href="{{ route('show.admin.users') }}">User Admin</a></li>
 				@endif
 			@endif
 		</ul>
@@ -108,6 +108,14 @@
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('tools') }}">Tools</a>
 					</li>
+					@if(Auth::check())
+						@if(Auth::User()->type == 'admin')
+						<li class="mb-1">
+							<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+							href="{{ route('show.admin.users') }}">User Admin</a>
+						</li>
+						@endif
+					@endif
 				</ul>
 			</div>
 			<div class="mt-auto">

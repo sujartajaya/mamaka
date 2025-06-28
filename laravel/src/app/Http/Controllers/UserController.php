@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -107,6 +108,54 @@ class UserController extends Controller
         $user = User::create($credentials);
         if ($user) {
             return response()->json($user,201);
+        }
+    }
+
+    public function allUsers(Request $request)
+    {
+        $users = User::get();
+        $data = [];
+        if ($users) {
+            $data['error'] = false;
+            $data['users'] = $users;
+        } else {
+           $data['error'] = true;
+            $data['message'] = "Error: can not get users data!";
+        }
+        return response()->json($data,200);
+    }
+
+    /**API for javascript */
+    public function storeNewUser(Request $request)
+    {
+        $datareq = $request->all();
+        $data = [];
+
+        $validator = Validator::make($datareq, [
+            'name' => ['required'],
+            'email' => ['required', 'email:rfc,dns','unique:users'],
+            'username' => ['required', 'unique:users'],
+            'type' => ['required'],
+            'password' => ['required', 'string', 'min:8', 'same:confirm_password'],
+            'confirm_password' => ['min:8']
+        ]);
+        if ($validator) {
+            if ($validator->fails()) {
+                $data['error'] = true;
+                $data['msg'] = $validator->messages();
+                return response()->json($data,200);
+            } else {
+                $validator['password'] = bcrypt($validator['password']);
+                $data['error'] = false;
+                $user = User::create($validator);
+                $data['msg'] = $user;
+                return response()->json($data,201);
+            }
+        
+        } else {
+            $data['error'] = true;
+            $data['msg'] = $validator->messages();
+            return response()->json($data,200);
         }
     }
 }
