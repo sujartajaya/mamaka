@@ -26,6 +26,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/getusers', [UserController::class,'allUsers'])->name('get.admin.users');
     Route::get('/users', function () {return view('user.userv1');})->name('show.admin.users');
     Route::post('/user',[UserController::class,'storeNewUser'])->name('store.admin.user');
+    Route::get('/user/{id}',[UserController::class,'getUserById'])->name('admin.user.by.id');
     Route::get('/guests', [WebloginController::class,'getGuests'])->name('getguests');
     Route::get('/tools', function () {return view('home.tool');})->name('tools');
     Route::get('/mac', function () { return view('routeros.macbinding'); })->name('mac');

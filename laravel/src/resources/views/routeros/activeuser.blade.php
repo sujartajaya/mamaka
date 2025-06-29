@@ -66,6 +66,11 @@
     let data = [];
     let filteredData = [];
 
+    function updatePaginationButtons() {
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage === Math.ceil(filteredData.length / rowsPerPage);
+    }
+
     async function addMacBinding(mac) {
       frmmac.method = "POST";
       frmmac.action = "/mac";
@@ -133,6 +138,20 @@
             filteredData =  [...data];
             renderTable();
 
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(currentPage);
+                    updatePaginationButtons();
+                }
+            });
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredData.length / rowsPerPage)) {
+                    currentPage++;
+                    renderTable(currentPage);
+                    updatePaginationButtons();
+                }
+            });
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
                 filteredData = data.filter(item =>

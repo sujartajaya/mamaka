@@ -55,36 +55,36 @@
         @csrf()
         <div>
           <label class="block text-sm font-medium text-gray-700">Name</label>
-          <input type="text" name="name" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
+          <input id="name" type="text" name="name" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" name="email" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
+          <input id="email" type="email" name="email" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">Username</label>
-          <input type="text" name="username" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
+          <input id="username" type="text" name="username" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700">Type</label>
-          <select name="type" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
+          <select id="type" name="type" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
             <option value="user">User</option>
             <option value="admin">Admin</option>
             <option value="operator">Operator</option>
           </select>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Password</label>
-          <input type="password" name="password" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
+        <div id="div_pwd" class="">
+          <label id="label_pwd" class="block text-sm font-medium text-gray-700">Password</label>
+          <input id="password" type="password" name="password" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
-          <input type="password" name="confirm_password" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
+        <div id="div_conf_pwd" class="">
+          <label id="label_comfirm_pwd" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input id="confirm_password" type="password" name="confirm_password" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required />
         </div>
 
         <div class="flex justify-end space-x-2 pt-4">
@@ -108,16 +108,22 @@
     let currentPage = 1;
     let data = [];
     let filteredData = [];
+    let edit_user = false;
+    let id_user = 0;
 
     function openModal() {
       document.getElementById('modal').classList.remove('hidden');
       document.getElementById('modal').classList.add('flex');
+      edit_user = false;
     }
 
     function closeModal() {
       document.getElementById('modal').classList.add('hidden');
       document.getElementById('modal').classList.remove('flex');
+      document.getElementById('div_pwd').classList.remove('hidden');
+      document.getElementById('div_conf_pwd').classList.remove('hidden');
       document.getElementById('userForm').reset();
+
     }
 
     function renderTable(page = 1) {
@@ -137,11 +143,11 @@
           <td class="px-4 py-2">${row['type']}</td>
           <td class="px-4 py-2">
             <div class="flex space-x-2">
-                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="updateUserProfile('${row['.id']}')">
+                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="updateUser('${row['id']}')">
                     Edit
                 </button>
                 <button
-                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400" onClick="confirmDelete('${row['.id']}')">
+                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400" onClick="confirmDelete('${row['id']}')">
                     Delete
                 </button>
             </div>
@@ -152,6 +158,26 @@
       });
 
       pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(filteredData.length / rowsPerPage)}`;
+    }
+
+    async function updateUser(id) {
+      id_user = id;
+      try {
+          const response = await fetch("/user/"+id);
+          const user = await response.json();
+          document.getElementById('name').value = user['name'];
+          document.getElementById('email').value = user['email'];
+          document.getElementById('username').value = user['username'];
+          document.getElementById('type').value = user['type'];
+          document.getElementById('password').classList.add('hidden');
+          document.getElementById('confirm_password').classList.add('hidden');
+          document.getElementById('div_pwd').classList.add('hidden');
+          document.getElementById('div_conf_pwd').classList.add('hidden');
+          openModal();
+          edit_user = true;
+      } catch (error) {
+        console.error('Error get data: ', error);
+      }
     }
 
     // async function handleSubmit(event) {
@@ -178,16 +204,27 @@
       e.preventDefault();
         const formData = new FormData(this);
         try {
+          if (edit_user === false) {
             const response = await fetch("<?php echo route('store.admin.user');?>", {
                 method: "POST",
                 body: formData // Tidak perlu set Content-Type
             });
             const result = await response.json();
             if (result.error === true) {
-
+                let msg_name = (result.msg.name !== undefined)? result.msg.name[0] : "";
+                let msg_email = (result.msg.email !== undefined)? result.msg.email[0] : "";
+                let msg_username = (result.msg.username !== undefined)? result.msg.username[0] : "";
+                let msg_password = (result.msg.password !== undefined)? result.msg.password[0] : "";
+                let msg_confirm_password = (result.msg.confirm_password !== undefined)? result.msg.confirm_password[0] : "";
+                let msg_print = "";
+                if (msg_name === "") { msg_print = ""} else msg_print = msg_username;
+                if (msg_email !== "") {msg_print = msg_print + "<br>"+msg_email};
+                if (msg_username !== "") {msg_print = msg_print + "<br>"+msg_username};
+                if (msg_password !== "") {msg_print = msg_print + "<br>"+msg_password};
+                if (msg_confirm_password !== "") {msg_print = msg_print + "<br>"+msg_confirm_password};
                 Swal.fire({
                     title: 'Warning',
-                    text: 'Error messages',
+                    html: `Confirm Data:${msg_print}`,
                     icon: 'warning',
                     confirmButtonText: 'Close',
                     customClass: {
@@ -197,20 +234,14 @@
                     }
                 });
             } else {
-                console.log(result['msg']);
                 closeModal();
                 this.reset();
                 getUsers();
             }
-            
+          }
         } catch (error) {
             console.error("Gagal:", error);
         }
-        // Tutup modal setelah submit
-        // closeModal();
-        // Reset form
-        // this.reset();
-        // Bisa ditambahkan fetch POST di sini jika ingin kirim ke backend
     });
 
     async function getUsers()

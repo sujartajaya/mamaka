@@ -145,9 +145,9 @@ class UserController extends Controller
                 $data['msg'] = $validator->messages();
                 return response()->json($data,200);
             } else {
-                $validator['password'] = bcrypt($validator['password']);
+                $datareq['password'] = bcrypt($datareq['password']);
                 $data['error'] = false;
-                $user = User::create($validator);
+                $user = User::create($datareq);
                 $data['msg'] = $user;
                 return response()->json($data,201);
             }
@@ -157,5 +157,12 @@ class UserController extends Controller
             $data['msg'] = $validator->messages();
             return response()->json($data,200);
         }
+    }
+
+    /** API for get user by id for js */
+    public function getUserById($id)
+    {
+        $user = User::where('id',$id)->first();
+        return response()->json($user,200);
     }
 }
