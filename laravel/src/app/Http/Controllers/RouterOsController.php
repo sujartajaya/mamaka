@@ -290,7 +290,7 @@ class RouterOsController extends Controller
         $data = [];
         if ($API->connect($ip, $user, $password)) {
 
-                        $system = $API->comm('/ip/hotspot/user/profile/print');
+                        $system = $API->comm('/ip/hotspot/profile/print');
 
             $data = [
                 'error' => false,

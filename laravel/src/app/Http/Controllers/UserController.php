@@ -165,4 +165,38 @@ class UserController extends Controller
         $user = User::where('id',$id)->first();
         return response()->json($user,200);
     }
+
+    /** API for update user for js */
+    public function userUpdate(Request $request, $id)
+    {
+        $datareq = $request->all();
+        $data = [];
+        $user = User::where('id',$id)->first();
+        $validator = Validator::make($datareq, [
+            'name' => 'required',
+            'email' => 'required|email:rfc,dns|unique:users,email'.$user->id,
+            'username' => 'required|unique:users,username'.$user->id,
+            'type' => ['required'],
+        ]);
+        if ($validator) {
+            if ($validator->fails()) {
+                $data['error'] = true;
+                $data['msg'] = $validator->messages();
+                return response()->json($data,200);
+            } else {
+                $data['error'] = false;
+                $dataupdate['name'] = $datareq['name'];
+                $dataupdate['email'] = $datareq['email'];
+                $dataupdate['username'] = $datareq['username'];
+                $dataupdate['type'] = $datareq['type'];
+                $user->update($dataupdate);
+                $data['msg'] = 'User updated!';
+                return response()->json($data,200);
+            }
+        } else {
+            $data['error'] = true;
+            $data['msg'] = $validator->messages();
+            return response()->json($data,200);
+        }
+    }
 }
