@@ -13,12 +13,12 @@
       </div>
 
       <!-- Card 2 -->
-      <!-- <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300 justify-between">
+      <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300 justify-between">
         <img src="/images/profile.png" alt="Speed limit" class="rounded-xl mb-4 w-full object-cover" width="100%" height="100%">
         <h2 class="text-xl font-semibold mb-2">User Profiles</h2>
         <p class="text-gray-600 mb-4">User profile menu is used for common HotSpot client settings. Profiles are like User groups with the same set of settings.</p>
         <a href="{{ route('user.profile') }}" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition">More ...</a>
-      </div> -->
+      </div>
 
       <!-- Card 3 -->
       <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300">

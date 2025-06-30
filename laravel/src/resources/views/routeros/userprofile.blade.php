@@ -242,9 +242,9 @@
 
     async function getUserProfiles() {
         try {
-            const response = await fetch('<?php echo route('get.user.profile'); ?>');
+            const response = await fetch('<?php echo route('show.user.profile'); ?>');
             const userprofiles = await response.json();
-            data =  userprofiles['userprofiles'];
+            data =  userprofiles['userprofile'];
             filteredData =  [...data];
             renderTable();
             document.getElementById('prevBtn').addEventListener('click', () => {

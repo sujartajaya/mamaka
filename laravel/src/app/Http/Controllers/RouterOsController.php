@@ -200,7 +200,8 @@ class RouterOsController extends Controller
         $data = [];
         if ($API->connect($ip, $user, $password)) {
 
-                        $system = $API->comm('/ip/hotspot/user/profile/print');
+
+            $system = $API->comm('/ip/hotspot/user/profile/print');
 
             $data = [
                 'error' => false,
@@ -280,36 +281,34 @@ class RouterOsController extends Controller
         }
     }
 
-    public function getUserProfiles()
-    {
-        $ip = env('MIKROTIK_IP');
-        $user = env('MIKROTIK_USER');
-        $password = env('MIKROTIK_PASSWORD');
-        $API = new RouterOs();
-        $API->debug = false;
-        $data = [];
-        if ($API->connect($ip, $user, $password)) {
+    // public function getUserProfiles()
+    // {
+    //     $ip = env('MIKROTIK_IP');
+    //     $user = env('MIKROTIK_USER');
+    //     $password = env('MIKROTIK_PASSWORD');
+    //     $API = new RouterOs();
+    //     $API->debug = false;
+    //     $data = [];
+    //     if ($API->connect($ip, $user, $password)) {
+    //         $system = $API->comm('/ip/hotspot/profile/print');
+    //         $data = [
+    //             'error' => false,
+    //             'title' => 'Hotspot User Profiles',
+    //             'userprofiles' => $system,
+    //         ];
+    //         // return view('routeros.activeuser',compact('data'));
+    //         return response()->json($data,200);
 
-                        $system = $API->comm('/ip/hotspot/profile/print');
-
-            $data = [
-                'error' => false,
-                'title' => 'Hotspot User Profiles',
-                'userprofiles' => $system,
-            ];
-            // return view('routeros.activeuser',compact('data'));
-            return response()->json($data,200);
-
-        } else {
-                    $data = [
-                        'error' => true,
-                        'title' => 'User Profile',
-                        'msg' => 'Error connect to mikrotik',
-                    ];
-                    // return view('routeros.activeuser',compact('data'));
-                    return response()->json($data,200);
-        }
-    }
+    //     } else {
+    //                 $data = [
+    //                     'error' => true,
+    //                     'title' => 'User Profile',
+    //                     'msg' => 'Error connect to mikrotik',
+    //                 ];
+    //                 // return view('routeros.activeuser',compact('data'));
+    //                 return response()->json($data,200);
+    //     }
+    // }
 
     public function addUserProfile(Request $request)
     {

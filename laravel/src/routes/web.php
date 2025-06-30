@@ -39,7 +39,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/mac/{id}', [RouterOsController::class,'updateMacBinding'])->name('update.mac.by.id');
     Route::delete('/mac/{id}', [RouterOsController::class,'deleteMacBinding'])->name('delete.mac.by.id');
     Route::get('/guest/{mac}', [GuestController::class,'show'])->name('show.guest.by.mac');
-    Route::get('/user/profile',[RouterOsController::class,'getUserProfiles'])->name('get.user.profile');
+    // Route::get('/user/profile',[RouterOsController::class,'getUserProfiles'])->name('get.user.profile');
+    Route::get('/userprofile',[RouterOsController::class,'showUserProfile'])->name('show.user.profile');
     Route::post('/user/profile',[RouterOsController::class,'addUserProfile'])->name('post.user.profile');
     Route::post('/user/profile/{id}',[RouterOsController::class,'updateUserProfile']);
     Route::get('/profiles', function () { return view('routeros.userprofile'); })->name('user.profile');
@@ -59,7 +60,6 @@ Route::get('/testgetusers', [UserController::class,'getUsers']);
 Route::get('/table', function () { return view('test.table');});
 Route::get('/modal', function () { return view('test.modal');});
 Route::get('/active', [RouterOsController::class,'showActiveUser']);
-Route::get('/userprofile',[RouterOsController::class,'showUserProfile']);
 Route::get('/testreg', function () { return view('user.registerv1'); });
 Route::post('/fetch',[RouterOsController::class,'testPost'])->name('test.post');
 
