@@ -47,7 +47,7 @@
 				</svg>
 			</li>
 			<li><a class="text-sm text-blue-600  font-bold" href="{{ route('tools') }}">Tools</a></li>
-			@if(Auth::check())
+			<!-- @if(Auth::check())
 				@if(Auth::User()->type == 'admin')
 				<li class="text-gray-300">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
@@ -58,7 +58,7 @@
 				</li>
 				<li><a class="text-sm text-blue-600  font-bold" href="{{ route('show.admin.users') }}">User Admin</a></li>
 				@endif
-			@endif
+			@endif -->
 		</ul>
 		@if(Auth::check())
 		<form id="logout-form" action="{{ route('logout') }}" method="POST">@csrf</form>
@@ -108,14 +108,14 @@
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('tools') }}">Tools</a>
 					</li>
-					@if(Auth::check())
+					<!-- @if(Auth::check())
 						@if(Auth::User()->type == 'admin')
 						<li class="mb-1">
 							<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('show.admin.users') }}">User Admin</a>
 						</li>
 						@endif
-					@endif
+					@endif -->
 				</ul>
 			</div>
 			<div class="mt-auto">
