@@ -9,7 +9,7 @@ use App\Http\Controllers\RouterOsController;
 
 Route::get('/', function () {return view('home.home');})->name('home');
 Route::get('/os', [GuestController::class,'index']);
-Route::get('/web/login', function () { return view('weblogin.loginv1');});
+Route::get('/web/login', function () { return redirect('https://ovolohotels.com/mamaka/long-stay/?gad_source=1&gad_campaignid=10952323866&gbraid=0AAAAADv4kheTZBXGJ3XMD38kkB7ImgCQD&gclid=Cj0KCQjwjdTCBhCLARIsAEu8bpI54UUiTSvQEVr5cIV1WbWTi7Cz5CuVRrphyl-Xlx3sKDEYi9eqx6oaAiglEALw_wcB');});
 
 Route::get('/web/countries', [CountryController::class,'show'])->name('country');
 Route::post('/web/login',[WebloginController::class,'create'])->name('weblogin');
