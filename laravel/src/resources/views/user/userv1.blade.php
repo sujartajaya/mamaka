@@ -51,7 +51,7 @@
     <div class="bg-white w-full max-w-md mx-auto p-6 rounded-xl shadow-lg relative">
       <h2 class="text-xl font-semibold mb-4">Form Input Data</h2>
       
-      <form id="userForm" class="space-y-4">
+      <form id="userForm" class="space-y-4" onSubmit="handleSubmit(event)">
         @csrf()
         <div>
           <label class="block text-sm font-medium text-gray-700">Name</label>
@@ -114,6 +114,11 @@
     function openModal() {
       document.getElementById('modal').classList.remove('hidden');
       document.getElementById('modal').classList.add('flex');
+
+      document.getElementById('password').classList.remove('hidden');
+      document.getElementById('confirm_password').classList.remove('hidden');
+      document.getElementById('div_pwd').classList.remove('hidden');
+      document.getElementById('div_conf_pwd').classList.remove('hidden');
       edit_user = false;
     }
 
@@ -173,32 +178,45 @@
           document.getElementById('confirm_password').classList.add('hidden');
           document.getElementById('div_pwd').classList.add('hidden');
           document.getElementById('div_conf_pwd').classList.add('hidden');
-          openModal();
+          // openModal();
+          document.getElementById('modal').classList.remove('hidden');
+          document.getElementById('modal').classList.add('flex');
           edit_user = true;
       } catch (error) {
         console.error('Error get data: ', error);
       }
     }
 
-    // async function handleSubmit(event) {
-    //     event.preventDefault();
-    //     const formData = new FormData(document.getElementById('userForm'));
-    //     console.log(formData);
-    //     try {
-    //         const response = await fetch("<?php echo route('store.admin.user');?>", {
-    //             method: "POST",
-    //             body: formData // Tidak perlu set Content-Type
-    //         });
-    //         //const result = await response.json(); 
-    //         console.log(response);
-    //         getUsers();
-    //     } catch (error) {
-    //         console.error("Gagal:", error);
-    //     }
-    //     closeModal();
-    //     // Reset form
-    //     document.getElementById('userForm').reset();
-    // }
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(document.getElementById('userForm'));
+        console.log(formData);
+        try {
+          if (edit_user === false) {
+            const response = await fetch("<?php echo route('store.admin.user');?>", {
+                method: "POST",
+                body: formData // Tidak perlu set Content-Type
+            });
+            //const result = await response.json(); 
+            console.log(response);
+            getUsers();
+          } else {
+            const response = await fetch(`/user/${id_user}`, {
+                method: "POST",
+                body: formData // Tidak perlu set Content-Type
+            });
+            //const result = await response.json(); 
+            console.log(response);
+            getUsers();
+          }
+            
+        } catch (error) {
+            console.error("Gagal:", error);
+        }
+        closeModal();
+        // Reset form
+        document.getElementById('userForm').reset();
+    }
 
     document.getElementById('userForm').addEventListener('submit', async function(e) {
       e.preventDefault();

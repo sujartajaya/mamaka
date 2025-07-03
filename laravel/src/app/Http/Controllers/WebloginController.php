@@ -32,9 +32,14 @@ class WebloginController extends Controller
         $guest = Guest::where('mac_add',$mac_add)->first();
         
         if ($guest) {
-            $guest->os_client = $this->getOS();
-            $guest->browser_client = $this->getBrowser();
-            $guest->save();
+            // $guest->os_client = $this->getOS();
+            // $guest->browser_client = $this->getBrowser();
+            $data_update = [
+                "os_client" =>  $this->getOS(),
+                "browser_client" => $this->getBrowser()
+            ];
+            $guest->update($data_update);
+            // $guest->save();
         }
         
         return view('weblogin.loginv2',compact('data','guest'));
