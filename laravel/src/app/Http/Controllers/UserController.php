@@ -174,15 +174,24 @@ class UserController extends Controller
         $user = User::where('id',$id)->first();
         $validator = Validator::make($datareq, [
             'name' => 'required',
-            'email' => 'required|email:rfc,dns|unique:users,email'.$user->id,
-            'username' => 'required|unique:users,username'.$user->id,
-            'type' => ['required'],
+            'email' => 'required|email:rfc,dns|unique:users,email',
+            'username' => 'required|unique:users,username',
+            'type' => 'required',
         ]);
         if ($validator) {
             if ($validator->fails()) {
                 $data['error'] = true;
                 $data['msg'] = $validator->messages();
-                return response()->json($data,200);
+                if (($user->email == $datareq['email']) && ($user->username == $datareq['username'])) {
+                    $data['error'] = false;
+                    $dataupdate['name'] = $datareq['name'];
+                    $dataupdate['type'] = $datareq['type'];
+                    $user->update($dataupdate);
+                    $data['msg'] = 'User updated!';
+                    return response()->json($data,200);
+                } else {
+                    return response()->json($data,200);
+                }
             } else {
                 $data['error'] = false;
                 $dataupdate['name'] = $datareq['name'];

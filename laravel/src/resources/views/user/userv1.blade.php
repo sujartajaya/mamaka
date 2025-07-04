@@ -51,7 +51,7 @@
     <div class="bg-white w-full max-w-md mx-auto p-6 rounded-xl shadow-lg relative">
       <h2 class="text-xl font-semibold mb-4">Form Input Data</h2>
       
-      <form id="userForm" class="space-y-4" onSubmit="handleSubmit(event)">
+      <form id="userForm" class="space-y-4">
         @csrf()
         <div>
           <label class="block text-sm font-medium text-gray-700">Name</label>
@@ -91,7 +91,7 @@
           <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
             Cancel
           </button>
-          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onClick="handleSubmit(event)">
             Save
           </button>
         </div>
@@ -197,16 +197,17 @@
                 method: "POST",
                 body: formData // Tidak perlu set Content-Type
             });
-            //const result = await response.json(); 
-            console.log(response);
+            const result = await response.json(); 
+            console.log(result['msg']);
             getUsers();
           } else {
             const response = await fetch(`/user/${id_user}`, {
                 method: "POST",
-                body: formData // Tidak perlu set Content-Type
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({name:document.getElementById('name').value, email:document.getElementById('email').value, username:document.getElementById('username').value, type:document.getElementById('type').value, _token: '{!! csrf_token() !!}'})
             });
-            //const result = await response.json(); 
-            console.log(response);
+            const result = await response.json(); 
+            console.log(result['msg']);
             getUsers();
           }
             
