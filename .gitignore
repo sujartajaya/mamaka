@@ -20,3 +20,12 @@ build/
 mysql/data/
 
 nginx/certs/
+
+nginx/certbot/etc/archive
+
+nginx/certbot/etc/live
+
+nginx/certbot/etc/renewal
+
+nginx/certbot/etc/renewal-hooks
+

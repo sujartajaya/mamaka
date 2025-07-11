@@ -57,7 +57,7 @@ services:
   php:
     build:
       args:
-        user: radius
+        user: putu
         uid: 1000
       context: ./php
       dockerfile: Dockerfile
@@ -91,7 +91,20 @@ services:
     volumes:
       - ./laravel/src:/var/www
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./nginx/certs:/etc/nginx/ssl
+      # - ./nginx/certs:/etc/nginx/ssl
+      - ./nginx/log:/var/log/nginx
+      - ./nginx/certbot/etc:/etc/letsencrypt
+    networks:
+      - localnet
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./nginx/certbot/etc:/etc/letsencrypt
+      # - ./nginx-proxy/certbot/www:/var/www/certbot
+      - ./nginx/certbot/log:/var/log/letsencrypt
+      # - ./nginx-proxy/certbot/dns:/etc
     networks:
       - localnet
 
