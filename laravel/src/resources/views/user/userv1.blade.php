@@ -198,37 +198,6 @@
                 body: formData // Tidak perlu set Content-Type
             });
             const result = await response.json(); 
-            console.log(result['msg']);
-            getUsers();
-          } else {
-            const response = await fetch(`/user/${id_user}`, {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({name:document.getElementById('name').value, email:document.getElementById('email').value, username:document.getElementById('username').value, type:document.getElementById('type').value, _token: '{!! csrf_token() !!}'})
-            });
-            const result = await response.json(); 
-            console.log(result['msg']);
-            getUsers();
-          }
-            
-        } catch (error) {
-            console.error("Gagal:", error);
-        }
-        closeModal();
-        // Reset form
-        document.getElementById('userForm').reset();
-    }
-
-    document.getElementById('userForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-        const formData = new FormData(this);
-        try {
-          if (edit_user === false) {
-            const response = await fetch("<?php echo route('store.admin.user');?>", {
-                method: "POST",
-                body: formData // Tidak perlu set Content-Type
-            });
-            const result = await response.json();
             if (result.error === true) {
                 let msg_name = (result.msg.name !== undefined)? result.msg.name[0] : "";
                 let msg_email = (result.msg.email !== undefined)? result.msg.email[0] : "";
@@ -254,14 +223,74 @@
                 });
             } else {
                 closeModal();
-                this.reset();
+                // this.reset();
+                document.getElementById('userForm').reset();
                 getUsers();
             }
+          } else {
+            const response = await fetch(`/user/${id_user}`, {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({name:document.getElementById('name').value, email:document.getElementById('email').value, username:document.getElementById('username').value, type:document.getElementById('type').value, _token: '{!! csrf_token() !!}'})
+            });
+            const result = await response.json(); 
+            console.log(result['msg']);
+            closeModal();
+            document.getElementById('userForm').reset();
+            getUsers();
           }
+            
         } catch (error) {
             console.error("Gagal:", error);
         }
-    });
+        // closeModal();
+        // // Reset form
+        // document.getElementById('userForm').reset();
+    }
+
+    // document.getElementById('userForm').addEventListener('submit', async function(e) {
+    //   e.preventDefault();
+    //     const formData = new FormData(this);
+    //     try {
+    //       if (edit_user === false) {
+    //         const response = await fetch("<?php echo route('store.admin.user');?>", {
+    //             method: "POST",
+    //             body: formData // Tidak perlu set Content-Type
+    //         });
+    //         const result = await response.json();
+    //         if (result.error === true) {
+    //             let msg_name = (result.msg.name !== undefined)? result.msg.name[0] : "";
+    //             let msg_email = (result.msg.email !== undefined)? result.msg.email[0] : "";
+    //             let msg_username = (result.msg.username !== undefined)? result.msg.username[0] : "";
+    //             let msg_password = (result.msg.password !== undefined)? result.msg.password[0] : "";
+    //             let msg_confirm_password = (result.msg.confirm_password !== undefined)? result.msg.confirm_password[0] : "";
+    //             let msg_print = "";
+    //             if (msg_name === "") { msg_print = ""} else msg_print = msg_username;
+    //             if (msg_email !== "") {msg_print = msg_print + "<br>"+msg_email};
+    //             if (msg_username !== "") {msg_print = msg_print + "<br>"+msg_username};
+    //             if (msg_password !== "") {msg_print = msg_print + "<br>"+msg_password};
+    //             if (msg_confirm_password !== "") {msg_print = msg_print + "<br>"+msg_confirm_password};
+    //             Swal.fire({
+    //                 title: 'Warning',
+    //                 html: `Confirm Data:${msg_print}`,
+    //                 icon: 'warning',
+    //                 confirmButtonText: 'Close',
+    //                 customClass: {
+    //                     popup: 'rounded-xl shadow-lg',
+    //                     title: 'text-xl font-bold',
+    //                     confirmButton: 'bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded mt-4'
+    //                 }
+    //             });
+    //         } else {
+    //             closeModal();
+    //             this.reset();
+    //             getUsers();
+    //         }
+    //       }
+    //     } catch (error) {
+    //         console.error("Gagal:", error);
+    //     }
+    // });
 
     async function getUsers()
     {
