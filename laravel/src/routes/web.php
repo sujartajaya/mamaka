@@ -6,6 +6,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RouterOsController;
+use App\Http\Controllers\TelegramController;
 
 Route::get('/', function () {return view('home.home');})->name('home');
 Route::get('/os', [GuestController::class,'index']);
@@ -16,6 +17,13 @@ Route::post('/web/login',[WebloginController::class,'create'])->name('weblogin')
 Route::post('/web/login/store',[WebloginController::class,'store']);
 Route::get('/login', function () { $prev_url = url()->previous(); return view('user.loginv1',compact('prev_url'));})->name('login');
 Route::post('/login',[UserController::class,'authtenticate'])->name('authtenticate');
+
+/** Telegram */
+Route::get('/telegram/{id}',[TelegramController::class,'getTelegramUser']);
+Route::post('/telegram/user',[TelegramController::class,'register']);
+Route::get('/telegram/csv/macbinding',[TelegramController::class,'downloadMacBinding']);
+Route::get('/telegram/csv/useractive',[TelegramController::class,'downloadUserActive']);
+Route::post('/telegram/mac/binding',[TelegramController::class,'addMaccBinding']);
 
 /** user admin type */
 Route::middleware(['auth', 'role:admin'])->group(function () {
