@@ -38,8 +38,6 @@
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Country</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Os</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Browser</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">First connect</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Last connect</th>
             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Byte in</th>
@@ -116,8 +114,6 @@
           <td class="px-4 py-2">${row.email}</td>
           <td class="px-4 py-2">${row.username}</td>
           <td class="px-4 py-2">${row.country_name}</td>
-          <td class="px-4 py-2">${row.os_client}</td>
-          <td class="px-4 py-2">${row.browser_client}</td>
           <td class="px-4 py-2">${row.created_at}</td>
           <td class="px-4 py-2">${row.updated_at}</td>
           <td class="px-4 py-2">${gb_in.toFixed(6)} GB</td>

@@ -6,6 +6,8 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RouterOsController;
+use App\Http\Controllers\TelegramController;
+
 
 Route::get('/', function () {return view('home.home');})->name('home');
 Route::get('/os', [GuestController::class,'index']);
@@ -14,6 +16,11 @@ Route::get('/web/login', function () { return redirect('https://ovolohotels.com/
 Route::get('/web/countries', [CountryController::class,'show'])->name('country');
 Route::post('/web/login',[WebloginController::class,'create'])->name('weblogin');
 Route::post('/web/login/store',[WebloginController::class,'store']);
+
+Route::get('/telegram/{id}',[TelegramController::class,'getTelegramUser']);
+Route::post('/telegram/user',[TelegramController::class,'register']);
+Route::get('/telegram/csv/macbinding',[TelegramController::class,'downloadMacBinding']);
+
 Route::get('/login', function () { $prev_url = url()->previous(); return view('user.loginv1',compact('prev_url'));})->name('login');
 Route::post('/login',[UserController::class,'authtenticate'])->name('authtenticate');
 

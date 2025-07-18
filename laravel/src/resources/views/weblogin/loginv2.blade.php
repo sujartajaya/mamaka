@@ -20,10 +20,10 @@
         </div>
 
         <p class="text-sm font-semibold">FREE INTERNET ACCESS</p>
-        <p class="text-xs mt-2 px-2" id="welcomeinfo" ><?php if ($guest) { ?>  <b>Welcome back {{ $guest['name'] }}</b><?php } else {?>By clicking the "Fill Form" button, you consent to receive marketing, promotional messages and information about Kuta Social Club and its affiliated hotel network (Ovolo, By Ovolo Collective). You may opt out of communications at any time. All data obtained is subject to the Privacy Policy.<?php } ?></p>
+        <p class="text-xs mt-2 px-2" id="welcomeinfo" ><?php if (isset($guest)) { ?>  <b>Welcome back {{ $guest['name'] }}</b><?php } else {?>By clicking the "Fill Form" button, you consent to receive marketing, promotional messages and information about Kuta Social Club and its affiliated hotel network (Ovolo, By Ovolo Collective). You may opt out of communications at any time. All data obtained is subject to the Privacy Policy.<?php } ?></p>
 
-        <button id="openModal" class="bg-teal-400 text-indigo-900 font-bold px-6 py-2 rounded-lg mt-4 w-full <?php if ($guest) { echo "hidden"; } ?>">Fill Form</button>
-        <button id="siginForm" class="bg-teal-400 text-indigo-900 font-bold px-6 py-2 rounded-lg mt-4 w-full <?php if (!$guest) { echo "hidden"; } ?>">Sign-in</button>
+        <button id="openModal" class="bg-teal-400 text-indigo-900 font-bold px-6 py-2 rounded-lg mt-4 w-full <?php if (isset($guest)) { echo "hidden"; } ?>">Fill Form</button>
+        <button id="siginForm" class="bg-teal-400 text-indigo-900 font-bold px-6 py-2 rounded-lg mt-4 w-full <?php if (!isset($guest)) { echo "hidden"; } ?>">Sign-in</button>
 
         <div class="mt-6 text-sm">
             <p id="errorInfo" class="font-bold text-red-800">{{ $data['error'] }}</p>
@@ -64,8 +64,8 @@
     </div>
 
     <form name="loginweb" action="<?php if (isset($data['link-login'])) { echo $data['link-login']; } ?>" method="POST">
-        <input type="hidden" name="username" value="<?php if($guest) { echo $guest['username']; }?>" />
-        <input type="hidden" name="password" value="<?php if($guest) { echo $guest['password']; }?>" />
+        <input type="hidden" name="username" value="<?php if(isset($guest)) { echo $guest['username']; }?>" />
+        <input type="hidden" name="password" value="<?php if(isset($guest)) { echo $guest['password']; }?>" />
         <input type="hidden" name="dst" value="https://ovolohotels.com/mamaka/long-stay/?gad_source=1&gad_campaignid=10952323866&gbraid=0AAAAADv4kheTZBXGJ3XMD38kkB7ImgCQD&gclid=Cj0KCQjwjdTCBhCLARIsAEu8bpI54UUiTSvQEVr5cIV1WbWTi7Cz5CuVRrphyl-Xlx3sKDEYi9eqx6oaAiglEALw_wcB" />
         <input type="hidden" name="popup" value="true" />
     </form>

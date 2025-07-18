@@ -8,6 +8,14 @@ use App\Models\Radacct;
 
 class Guest extends Model
 {
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $casts = [
+        'id' => 'string'
+    ];
+
     protected $fillable = [
         'name',
         'email',
