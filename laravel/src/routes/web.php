@@ -71,7 +71,8 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/testreg', function () { return view('user.registerv1'); });
 // Route::post('/fetch',[RouterOsController::class,'testPost'])->name('test.post');
 
-
+// Route::get('/register', function () { return view('user.register');})->name('register');
+// Route::post('/register',[UserController::class,'store'])->name('postregister');
 
 
 

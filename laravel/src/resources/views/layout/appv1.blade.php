@@ -31,6 +31,8 @@
 		<ul
 			class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
 			<li><a class="text-sm text-blue-600  font-bold" href="{{ route('home') }}">Home</a></li>
+			@if(Auth::check())
+			@if(Auth::User()->type == 'admin')
 			<li class="text-gray-300">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
 					viewBox="0 0 24 24">
@@ -47,6 +49,8 @@
 				</svg>
 			</li>
 			<li><a class="text-sm text-blue-600  font-bold" href="{{ route('tools') }}">Tools</a></li>
+			@endif
+			@endif
 			<!-- @if(Auth::check())
 				@if(Auth::User()->type == 'admin')
 				<li class="text-gray-300">
@@ -100,6 +104,8 @@
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('home') }}">Home</a>
 					</li>
+					@if(Auth::check())
+					@if(Auth::User()->type == 'admin')
 					<li class="mb-1">
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('getguests') }}">Guests</a>
@@ -108,6 +114,8 @@
 						<a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
 							href="{{ route('tools') }}">Tools</a>
 					</li>
+					@endif
+					@endif
 					<!-- @if(Auth::check())
 						@if(Auth::User()->type == 'admin')
 						<li class="mb-1">
