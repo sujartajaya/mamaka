@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('username')->nullable();
             $table->string('phone')->nullable();
             $table->enum('verified',['0','1'])->default(0);
-            $table->enum('rule',['admin','user'])->default('user');
+            $table->enum('role',['admin','user'])->default('user');
             $table->datetime('verified_at')->nullable();
             $table->timestamps();
         });

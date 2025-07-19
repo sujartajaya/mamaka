@@ -445,4 +445,27 @@ class RouterOsController extends Controller
         }
     }
     
+
+    public function fetchHtml()
+    {
+        $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // hasil sebagai string
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+        $html = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            abort(500, 'Curl error: ' . curl_error($ch));
+        }
+
+        curl_close($ch);
+
+        // Langsung kembalikan sebagai konten HTML
+        return response($html, 200)
+               ->header('Content-Type', 'text/html');
+    }
 }

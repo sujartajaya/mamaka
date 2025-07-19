@@ -139,4 +139,10 @@ class TelegramController extends Controller
         }
 
     }
+
+    public function getUsers()
+    {
+        $users = Telegram::get();
+        return response()->json($users,200);
+    }
 }
