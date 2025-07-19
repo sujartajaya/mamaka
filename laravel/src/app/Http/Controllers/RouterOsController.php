@@ -446,10 +446,13 @@ class RouterOsController extends Controller
     }
     
 
-    public function fetchHtml()
+    public function fetchHtml($traffic)
     {
-        $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
-
+        if ($traffic == 'wan') {
+            $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
+        } else if ($traffic == 'guest') {
+            $url = 'http://222.165.249.230/graphs/iface/VLAN%2D50/';
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // hasil sebagai string
@@ -467,5 +470,17 @@ class RouterOsController extends Controller
         // Langsung kembalikan sebagai konten HTML
         return response($html, 200)
                ->header('Content-Type', 'text/html');
+    }
+
+    public function wanTraffic()
+    {
+        $data['traffic'] = 'wan';
+        return view('routeros.traffic',$data);
+    }
+    
+    public function guestTraffic()
+    {
+        $data['traffic'] = 'guest';
+        return view('routeros.traffic',$data);
     }
 }

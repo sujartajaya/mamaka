@@ -56,6 +56,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/profiles/{id}', [RouterOsController::class,'deleteUserprofile']);
     Route::get('/telegram/get/users', [TelegramController::class,'getUsers'])->name('get.telegram.users');
     Route::get('/telegram/register/users', function() { return view('telegram.user');})->name('register.telegram.users');
+    Route::get('/traffic/get/{traffic}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
+    Route::get('/traffic/wan', [RouterOsController::class,'wanTraffic'])->name('wan.traffic');
+    Route::get('/traffic/guest', [RouterOsController::class,'guestTraffic'])->name('guest.traffic');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -76,5 +80,4 @@ Route::middleware(['auth'])->group(function () {
 // Route::post('/register',[UserController::class,'store'])->name('postregister');
 
 Route::get('/clone', function () { return view('test.clone');});
-Route::get('traffic',[RouterOsController::class,'fetchHtml']);
 

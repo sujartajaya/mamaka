@@ -28,6 +28,19 @@
         <a href="{{ route('activeuser') }}" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition">More ...</a>
       </div>
 
+      <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300">
+        <img src="/images/traffic.png" alt="Users connection" class="rounded-xl mb-4 w-full object-cover" width="50%" height="50%">
+        <h2 class="text-xl font-semibold mb-2">WAN Traffic</h2>
+        <p class="text-gray-600 mb-4">Displays WAN bandwidth usage traffic from daily, weekly, monthly, to yearly periods.</p>
+        <a href="{{ route('wan.traffic') }}" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition">More ...</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300">
+        <img src="/images/traffic.png" alt="Users connection" class="rounded-xl mb-4 w-full object-cover" width="50%" height="50%">
+        <h2 class="text-xl font-semibold mb-2">GUEST Traffic</h2>
+        <p class="text-gray-600 mb-4">Displays GUEST bandwidth usage traffic from daily, weekly, monthly, to yearly periods.</p>
+        <a href="{{ route('guest.traffic') }}" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition">More ...</a>
+      </div>
     </div>
   </div>
 @endsection

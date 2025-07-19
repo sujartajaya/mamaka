@@ -1,37 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-  <title>Ambil Box dari URL</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-6xl mx-auto bg-white p-4 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Hasil dari URL (div.box)</h1>
-
-    <input id="urlInput" type="text" placeholder="Masukkan URL target..." 
-           class="w-full p-2 mb-4 border rounded" 
-           value="https://localhost/traffic/wan/get" />
-
-    <button onclick="loadBoxesFromURL()" 
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-      Ambil Data
-    </button>
-    
-  </div>
-    <div id="outul" class="mt-2 text-pretty">Ini Ul</div>
-    <div id="boxtraffic" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-6">
-        <div id="output" class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300"></div>
+@extends('layout.appv1')
+@section('tools')
+<div class="w-full text-white text-center py-4 mt-6">
+        @if($traffic == 'wan')
+		<h2>WAN TRAFFIC</h2>
+        @endif
+        @if($traffic == 'guest')
+		<h2>GUEST TRAFFIC</h2>
+        @endif
+        <h4 id="outul">Last update:</h4>
+</div>
+<div class="max-w-7xl mx-auto">
+    <div id="output" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-6">
     </div>
-  <script>
+</div>
+<script>
+
     async function loadBoxesFromURL() {
-      const url = document.getElementById('urlInput').value;
+      @if($traffic == 'wan')
+      const url = "{{ route('get.traffic','wan') }}";
+      const imgBaseUrl = 'https://222.165.249.230/graphs/iface/ether1/';
+      @endif
+      @if($traffic == 'guest')
+      const url = "{{ route('get.traffic','guest') }}";
+      const imgBaseUrl = 'https://222.165.249.230/graphs/iface/VLAN%2D50/';
+      @endif
       const output = document.getElementById('output');
       const outul = document.getElementById('outul');
 
-      output.innerHTML = '⏳ Memuat...';
-      const imgBaseUrl = 'https://222.165.249.230/graphs/iface/ether1/';
+      outul.innerHTML = '⏳ Loading....';
       try {
         const response = await fetch(url);
         const htmlText = await response.text();
@@ -41,6 +37,7 @@
         const dataul = doc.querySelector('ul')?.textContent;
         const boxes = doc.querySelectorAll('div.box');
         outul.innerHTML = dataul;
+
         if (boxes.length === 0) {
           output.innerHTML = '<p class="text-red-600">Tidak ditemukan div dengan class "box".</p>';
           return;
@@ -69,6 +66,6 @@
         console.error(error);
       }
     }
-  </script>
-</body>
-</html>
+    loadBoxesFromURL();
+</script>
+@endsection
