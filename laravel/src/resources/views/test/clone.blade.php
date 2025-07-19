@@ -29,7 +29,7 @@
       const outul = document.getElementById('outul');
 
       output.innerHTML = '⏳ Memuat...';
-      const imgBaseUrl = 'http://222.165.249.230/graphs/iface/ether1/';
+      const imgBaseUrl = 'https://222.165.249.230/graphs/iface/ether1/';
       try {
         const response = await fetch(url);
         const htmlText = await response.text();
