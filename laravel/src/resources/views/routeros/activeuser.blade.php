@@ -16,8 +16,8 @@
   <div class="overflow-x-auto flex w-full max-w-wd bg-white rounded-lg  justify-start items-center mt-2 mb-4 space-x-2">
     <input type="text" id="searchInput" placeholder="Search..."
       class="max-w-sm mn-w-[150px] mb-4 p-2 border border-gray-300 rounded" />
-    <button id="btnAddmac"
-      class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" onClick="addMacBinding('F0:D5:BF:F8:8C:5C')">Test Mac</button>
+    <!-- <button id="btnAddmac"
+      class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" onClick="addMacBinding('F0:D5:BF:F8:8C:5C')">Test Mac</button> -->
   </div>
   <div
     class="overflow-x-auto flex flex-col w-full max-w-wd bg-white rounded-lg shadow-lg justify-center items-center mt-2">
