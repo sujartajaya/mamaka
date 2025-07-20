@@ -12,7 +12,7 @@ class Telegram extends Model
         'telegram_id',
         'username',
         'phone',
-        'rule',
+        'role',
         'verified',
         'verified_at'
     ];

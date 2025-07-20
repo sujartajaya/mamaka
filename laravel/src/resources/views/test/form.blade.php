@@ -11,7 +11,7 @@
       const formData = new FormData(form); // Ambil semua data dari form
 
       try {
-        const response = await fetch("/fetch", {
+        const response = await fetch("/telegram/csv/email", {
           method: "POST",
           body: formData // Tidak perlu set Content-Type
         });
@@ -24,26 +24,42 @@
         alert("Terjadi kesalahan saat mengirim data.");
       }
     }
+    async function token(event) {
+      event.preventDefault();
+
+      const url = "http://localhost/token";
+      const frmtoken = document.getElementById('tokenid');
+      try {
+        const response = await fetch(url);
+        console.log(response.data.token.token);
+        frmtoken.value = response.data.token.token;
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error.message);
+      }
+    }
   </script>
   @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <form id="myForm" onsubmit="handleSubmit(event)" class="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-    @csrf
+  <form id="myForm" action="/telegram/csv/email" class="bg-white p-6 rounded-xl shadow-md w-full max-w-md" method="post">
     <h2 class="text-2xl font-bold mb-4 text-gray-800">Form Input</h2>
-
+    <input id="tokenid" type="hidden" name="_token">
     <div class="mb-4">
-      <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-      <input type="text" name="name" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      <label for="name" class="block text-gray-700 font-medium mb-2">Start date</label>
+      <input type="date" name="start_date" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
     </div>
 
     <div class="mb-4">
       <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-      <input type="email" name="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      <input type="date" name="end_date" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
     </div>
 
     <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition">
       Submit
+    </button>
+    <br>
+    <button onclick="token(event)" type="button" class=" w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+      Token
     </button>
   </form>
 </body>

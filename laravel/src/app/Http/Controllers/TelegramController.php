@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Telegram;
 use App\Models\RouterOs;
+use DB;
+use Illuminate\Support\Facades\Validator;
 
 class TelegramController extends Controller
 {
@@ -145,4 +147,77 @@ class TelegramController extends Controller
         $users = Telegram::get();
         return response()->json($users,200);
     }
+
+    public function getCsrfToken()
+    {
+        return csrf_token(); // return string token
+    }
+
+    public function generateToken(Request $request)
+    {
+        $token = bin2hex(random_bytes(16));
+        $expired = now()->addMinutes(10); // expired dalam 10 menit
+
+        $request->session()->put('custom_token', $token);
+        $request->session()->put('custom_token_expire', $expired);
+
+        return response()->json([
+            'token' => $token,
+            'expired_at' => $expired,
+        ]);
+    }
+
+    public function downloadEmail(Request $request)
+    {
+        $startdate = $request->start_date; 
+        $enddate = $request->end_date;
+        $datareq = $request->all();
+
+        $validator = Validator::make($datareq, [
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date'
+        ]);
+
+        if ($validator) {
+            if ($validator->fails()) {
+                return response()->json(['messages' => $validator->messages()],400); /** client error bad request */
+            }
+        }
+
+        $sqr = "select guests.id as no, guests.name as name, guests.email as email, guests.username as username, guests.mac_add as mac_add, guests.os_client as os_client, guests.browser_client as browser_client, guests.created_at as created_at, guests.updated_at as updated_at, sum(radacct.acctinputoctets) as byteinput,sum(radacct.acctoutputoctets) as byteoutput, countries.country_name from guests, radacct, countries where guests.username=radacct.username and guests.country_id = countries.id and radacct.acctstarttime >= '".$startdate."' and radacct.acctstarttime < '".$enddate."' group by radacct.username order by guests.created_at asc";
+        
+        $guests = DB::select($sqr);
+        if ($guests) {
+            $filename = "guestsdata.csv";
+            $fp = fopen($filename,"w+");
+            fputcsv($fp, array('No','Name','Email','Country','Username','Mac Address','Os Client','Browser Client','First Connect','Bytes Input','Bytes Output'));
+            $i = 1;
+            foreach ($guests as $guest) {
+                fputcsv($fp, array($i,$guest->name,$guest->email,$guest->country_name,$guest->username,$guest->mac_add,$guest->os_client,$guest->browser_client,$guest->created_at,$guest->byteinput,$guest->byteoutput));
+                $i = $i + 1;
+            }
+            fclose($fp);
+            $headers = array('Content-Type' => 'text/csv');
+            return response()->download($filename,'guestsdata.csv', $headers);
+            // return $guests[0]->name;
+        } else {
+            return response()->json(['message' => 'Data not found.'],400); /** No data found */
+        }
+     
+    }
+
+    public function update(Request $request)
+    {
+        $user = Telegram::where('telegram_id',$request->telegram_id)->first();
+        if ($user) {
+            $user->verified = $request->verified;
+            $user->role = $request->role;
+            $user->verified_at = now();
+            $user->update();
+            return response()->json(['message' => "User updated"],200);
+        } else {
+            return response()->json(['message' => $user],200);
+        }
+    }
+
 }

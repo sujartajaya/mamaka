@@ -39,7 +39,6 @@
         <h2 class="text-xl font-semibold mb-4">Form Input Data</h2>
         
         <form id="userForm" class="space-y-4">
-            @csrf()
             <div>
             <label class="block text-sm font-medium text-gray-700">Verified</label>
             <select id="verified" name="verified" class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" required>
@@ -69,16 +68,44 @@
   <script>
     let users = []; // full data from API
     let currentPage = 1;
+    let telegram_id = "";
     const rowsPerPage = 5;
-
-    function openModal() {
+    const frmuser = document.getElementById('userForm');
+    const verified = document.getElementById('verified');
+    const role = document.getElementById('role');
+    
+    function openModal(id) {
       document.getElementById('modal').classList.remove('hidden');
       document.getElementById('modal').classList.add('flex');
+      telegram_id = id;
     }
 
     function closeModal() {
       document.getElementById('modal').classList.add('hidden');
       document.getElementById('modal').classList.remove('flex');
+      frmuser.reset();
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const data_verified = verified.value;
+      const data_role = role.value;
+      const response = await fetch("<?php echo route('update.telegram.user'); ?>",{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          verified: data_verified,
+          role: data_role,
+          _token: '{{ csrf_token() }}',
+          telegram_id: telegram_id,
+        })},
+      );
+      const usrupdate = await response.json();
+      console.log(usrupdate);
+      closeModal();
+      fetchData();
     }
     // Fetch data from API
     async function fetchData() {
@@ -108,11 +135,11 @@
       paginatedUsers.forEach(user => {
         let btn = "";
         if (user.verified === 0) {
-            btn = `<button class= "bg-green-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="openModal()">
+            btn = `<button class= "bg-green-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="openModal(${user.telegram_id})">
                     Verified
                 </button>`;
         } else {
-            btn = `<button class= "bg-red-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="openModal()">
+            btn = `<button class= "bg-red-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="openModal(${user.telegram_id})">
                     Approve
                 </button>`;
         }

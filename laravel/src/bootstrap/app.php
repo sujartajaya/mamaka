@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\Role as RoleMiddleware;
+use App\Http\Middleware\MyTokenMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => AuthMiddleware::class,
             'admin' => AdminMiddleware::class,
             'role' => RoleMiddleware::class,
+            'mytoken' => MyTokenMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
