@@ -134,8 +134,8 @@
 
       paginatedUsers.forEach(user => {
         let btn = "";
-        if (user.verified === 0) {
-            btn = `<button class= "bg-green-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400" onClick="openModal(${user.telegram_id})">
+        if (user.verified === '1') {
+            btn = `<button class= "bg-green-500  text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
                     Verified
                 </button>`;
         } else {

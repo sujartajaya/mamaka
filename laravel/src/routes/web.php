@@ -26,6 +26,8 @@ Route::get('/telegram/csv/useractive',[TelegramController::class,'downloadUserAc
 Route::post('/telegram/mac/binding',[TelegramController::class,'addMaccBinding']);
 Route::get('/token',[TelegramController::class,'getCsrfToken'])->name('get.token');
 Route::post('/telegram/csv/email',[TelegramController::class,'downloadEmail']);
+Route::get('/traffic/get/{traffic}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
+
 /** user admin type */
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/register', function () { return view('user.register');})->name('register');
@@ -58,7 +60,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/telegram/get/users', [TelegramController::class,'getUsers'])->name('get.telegram.users');
     Route::get('/telegram/register/users', function() { return view('telegram.user');})->name('register.telegram.users');
     Route::post('/telegram/user/update',[TelegramController::class,'update'])->name('update.telegram.user');
-    Route::get('/traffic/get/{traffic}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
     Route::get('/traffic/wan', [RouterOsController::class,'wanTraffic'])->name('wan.traffic');
     Route::get('/traffic/guest', [RouterOsController::class,'guestTraffic'])->name('guest.traffic');
 
