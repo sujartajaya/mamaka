@@ -19,7 +19,7 @@ Route::get('/login', function () { $prev_url = url()->previous(); return view('u
 Route::post('/login',[UserController::class,'authtenticate'])->name('authtenticate');
 
 /** Telegram */
-Route::get('/telegram/{id}',[TelegramController::class,'getTelegramUser']);
+Route::get('/telegram/user/{id}',[TelegramController::class,'getTelegramUser']);
 Route::post('/telegram/user',[TelegramController::class,'register']);
 Route::get('/telegram/csv/macbinding',[TelegramController::class,'downloadMacBinding']);
 Route::get('/telegram/csv/useractive',[TelegramController::class,'downloadUserActive']);
@@ -27,7 +27,6 @@ Route::post('/telegram/mac/binding',[TelegramController::class,'addMaccBinding']
 Route::get('/token',[TelegramController::class,'getCsrfToken'])->name('get.token');
 Route::post('/telegram/csv/email',[TelegramController::class,'downloadEmail']);
 Route::get('/traffic/get/{traffic}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
-
 /** user admin type */
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/register', function () { return view('user.register');})->name('register');

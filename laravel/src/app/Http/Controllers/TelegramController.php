@@ -219,5 +219,5 @@ class TelegramController extends Controller
             return response()->json(['message' => $user],200);
         }
     }
-
+    
 }

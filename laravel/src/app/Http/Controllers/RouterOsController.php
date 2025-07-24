@@ -452,6 +452,8 @@ class RouterOsController extends Controller
             $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
         } else if ($traffic == 'guest') {
             $url = 'http://222.165.249.230/graphs/iface/VLAN%2D50/';
+        } else if ($traffic == 'boh') {
+            $url = 'http://222.165.249.230/graphs/iface/bridge-vlan-20/';
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
