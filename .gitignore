@@ -31,6 +31,7 @@ nginx/certbot/etc/renewal-hooks
 
 # Byte-compiled / optimized / DLL files
 telegram/python/__pycache__/
+telegram/python/handlers/__pycache__/
 telegram/python/*.py[cod]
 telegram/python/$py.class
 
