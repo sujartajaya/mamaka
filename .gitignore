@@ -29,3 +29,25 @@ nginx/certbot/etc/renewal
 
 nginx/certbot/etc/renewal-hooks
 
+# Byte-compiled / optimized / DLL files
+telegram/python/__pycache__/
+telegram/python/*.py[cod]
+telegram/python/$py.class
+
+# C extensions
+telegram/python/*.so
+
+# Distribution / packaging
+telegram/python/.Python
+telegram/python/build/
+telegram/python/develop-eggs/
+telegram/python/dist/
+telegram/python/downloads/
+telegram/python/eggs/
+telegram/python/.eggs/
+telegram/python/lib/
+telegram/python/lib64/
+telegram/python/parts/
+
+# Installer logs
+telegram/python/pip-log.txt
