@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from config import API_BASE_URL, VERIFY_SSL
+import re
 
 def clean_text(value):
     return value if value else ""
@@ -55,3 +56,40 @@ def extract_traffic_image_url(html_text):
     if img_tag and "src" in img_tag.attrs:
         return img_tag["src"]
     return None
+
+def get_traffic_info(interface: str, period: str):
+    try:
+        url = f"{API_BASE_URL}/graphs/{interface}/"
+        response = requests.get(url, verify=VERIFY_SSL)
+        response.raise_for_status()
+
+        html = response.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Temukan div yang sesuai periodenya
+        boxes = soup.find_all('div', class_='box')
+        target_box = None
+        for box in boxes:
+            if period.lower() in box.text.lower():
+                target_box = box
+                break
+
+        if not target_box:
+            return {"error": f"Data {period} tidak ditemukan untuk interface {interface}"}
+
+        # Ambil gambar
+        img_tag = target_box.find('img')
+        image_src = img_tag['src']
+        image_url = f"{API_BASE_URL}/graphs/{interface}/{image_src}"
+
+        # Ambil teks <p>
+        stats_text = target_box.find('p').get_text()
+        stats_text = re.sub(r'\s+', ' ', stats_text).strip()
+
+        return {
+            "image_url": image_url,
+            "text": f"📶 {interface.upper()} - {period.capitalize()}\n{stats_text}"
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
