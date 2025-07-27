@@ -49,6 +49,7 @@ telegram/python/.eggs/
 telegram/python/lib/
 telegram/python/lib64/
 telegram/python/parts/
+telegram/python/botenv/
 
 # Installer logs
 telegram/python/pip-log.txt
