@@ -1,7 +1,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from services.api import api_get_html, extract_traffic_for_interface
-from config import API_BASE_URL
+from config import API_BASE_URL, ROUTER_BASE_URL
 
 # Mapping interface ke nama internal
 INTERFACE_MAPPING = {
@@ -31,7 +31,7 @@ async def traffic_type_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     # Simpan ke context
     context.user_data["interface"] = interface_key
     context.user_data['eth'] = INTERFACE_MAPPING[interface_key]
-    print(f'Interface key = {interface_key}\nInterface_eth = {INTERFACE_MAPPING[interface_key]}')
+    # print(f'Interface key = {interface_key}\nInterface_eth = {INTERFACE_MAPPING[interface_key]}')
     keyboard = [
         [InlineKeyboardButton(period.title(), callback_data=f"period_{period}")]
         for period in PERIODS
@@ -57,6 +57,7 @@ async def traffic_period_handler(update: Update, context: ContextTypes.DEFAULT_T
 
     html = api_get_html(interface_eth)
     if not html:
+        # print(f'Ini kode html get:\n{html}')
         await query.edit_message_text("⚠️ Gagal mengambil data dari server.")
         return
 
@@ -65,11 +66,12 @@ async def traffic_period_handler(update: Update, context: ContextTypes.DEFAULT_T
         await query.edit_message_text("⚠️ Grafik tidak ditemukan.")
         return
 
-    full_url = result['image_url']
-    if full_url.startswith('/'):
-        full_url = API_BASE_URL.replace("/api", "") + full_url
-    elif not full_url.startswith("http"):
-        full_url = API_BASE_URL.replace("/api", "") + '/' + full_url
+    full_url = ROUTER_BASE_URL + "/graphs/iface/"+ interface_eth + "/" + result['image_url']
+
+    # if full_url.startswith('/'):
+    #     full_url = API_BASE_URL.replace("/api", "") + full_url
+    # elif not full_url.startswith("http"):
+    #     full_url = API_BASE_URL.replace("/api", "") + '/' + full_url
 
     caption = (
         f"*{period.title()} - {interface_key.upper()}*\n"
