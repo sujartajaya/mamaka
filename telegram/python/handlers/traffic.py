@@ -1,6 +1,6 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from services.api import api_get_html, extract_traffic_for_interface
+from services.api import api_get_html, extract_traffic_for_interface, api_get
 from config import API_BASE_URL, ROUTER_BASE_URL
 
 # Mapping interface ke nama internal
@@ -15,12 +15,19 @@ PERIODS = ['daily', 'weekly', 'monthly', 'yearly']
 
 # Command /traffic ➜ pilih interface
 async def traffic(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton(f"Traffic {key.upper()}", callback_data=f"traffic_{key}")]
-        for key, name in INTERFACE_MAPPING.items()
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("🔧 Pilih jenis trafik:", reply_markup=reply_markup)
+    user_id = update.effective_user.id
+    result = api_get("telegram/user/"+str(user_id))
+    if not result['exist']:
+        await update.message.reply_text(f"🗒️ Silakan /register dulu!")
+    elif result['exist']  and result['user']['verified'] == '0':
+        await update.message.reply_text(f"📝 Kontak anda masih dalam proses review oleh admin!")
+    else:
+        keyboard = [
+            [InlineKeyboardButton(f"Traffic {key.upper()}", callback_data=f"traffic_{key}")]
+            for key, name in INTERFACE_MAPPING.items()
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text("🔧 Pilih jenis trafik:", reply_markup=reply_markup)
 
 # Pilih interface ➜ tampilkan pilihan periode
 async def traffic_type_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

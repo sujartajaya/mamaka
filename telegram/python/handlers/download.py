@@ -2,7 +2,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 import datetime
 from io import BytesIO
-from services.api import api_get_file, api_post_file
+from services.api import api_get_file, api_post_file, api_get
 
 DOWNLOAD_URLS = {
     'macbinding': 'telegram/csv/macbinding',
@@ -17,12 +17,21 @@ def validate_date(date_str):
         return None
 
 async def download(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("Download MAC Binding", callback_data='download_macbinding')],
-        [InlineKeyboardButton("Download User Active", callback_data='download_useractive')],
-        [InlineKeyboardButton("Download User Guest", callback_data='download_userguest')]
-    ]
-    await update.message.reply_text("Pilih jenis data yang ingin didownload:", reply_markup=InlineKeyboardMarkup(keyboard))
+    user_id = update.effective_user.id
+    result = api_get("telegram/user/"+str(user_id))
+    if not result['exist']:
+        await update.message.reply_text(f"📌 Silakan /register dulu!")
+    elif result['exist']  and result['user']['verified'] == '0':
+        await update.message.reply_text(f"📌 Kontak anda masih dalam proses review oleh admin!")
+    elif result['exist'] and result['user']['role'] == 'admin':
+        keyboard = [
+            [InlineKeyboardButton("Download MAC Binding", callback_data='download_macbinding')],
+            [InlineKeyboardButton("Download User Active", callback_data='download_useractive')],
+            [InlineKeyboardButton("Download User Guest", callback_data='download_userguest')]
+        ]
+        await update.message.reply_text("Pilih jenis data yang ingin didownload:", reply_markup=InlineKeyboardMarkup(keyboard))
+    else:
+        await update.message.reply_text(f"❌ Hanya admin yang dapat lakukan ini, silakan hubungi admin!")
 
 async def download_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
