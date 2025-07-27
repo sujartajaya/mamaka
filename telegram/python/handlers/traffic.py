@@ -1,49 +1,85 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes, CallbackQueryHandler
-from services.api import get_traffic_info
+from telegram.ext import ContextTypes
+from services.api import api_get_html, extract_traffic_for_interface
+from config import API_BASE_URL
 
-TRAFFIC_TYPES = ['wan', 'lan', 'guest', 'boh']
-TRAFFIC_PERIODS = ['daily', 'weekly', 'monthly', 'yearly']
+# Mapping interface ke nama internal
+INTERFACE_MAPPING = {
+    'wan': 'ether1',
+    'lan': 'ether2',
+    'guest': 'VLAN-50',
+    'boh': 'VLAN-20'
+}
 
+PERIODS = ['daily', 'weekly', 'monthly', 'yearly']
+
+# Command /traffic ➜ pilih interface
 async def traffic(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton(f"Traffic {t.upper()}", callback_data=f"traffic_{t}")]
-        for t in TRAFFIC_TYPES
+        [InlineKeyboardButton(f"Traffic {key.upper()}", callback_data=f"traffic_{key}")]
+        for key, name in INTERFACE_MAPPING.items()
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("📡 Pilih jenis traffic:", reply_markup=reply_markup)
+    await update.message.reply_text("🔧 Pilih jenis trafik:", reply_markup=reply_markup)
 
+# Pilih interface ➜ tampilkan pilihan periode
 async def traffic_type_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    traffic_type = query.data.split("_")[1]
+    interface_key = query.data.replace("traffic_", "")
 
+    # Simpan ke context
+    context.user_data["interface"] = interface_key
+    context.user_data['eth'] = INTERFACE_MAPPING[interface_key]
+    print(f'Interface key = {interface_key}\nInterface_eth = {INTERFACE_MAPPING[interface_key]}')
     keyboard = [
-        [InlineKeyboardButton(p.capitalize(), callback_data=f"{traffic_type}_{p}")]
-        for p in TRAFFIC_PERIODS
+        [InlineKeyboardButton(period.title(), callback_data=f"period_{period}")]
+        for period in PERIODS
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(
-        text=f"📊 Pilih periode untuk traffic {traffic_type.upper()}:", reply_markup=reply_markup
+        f"📊 Pilih periode grafik trafik untuk *{interface_key.upper()}*:",
+        parse_mode="Markdown",
+        reply_markup=reply_markup
     )
 
+# Pilih periode ➜ ambil grafik dan statistik
 async def traffic_period_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    traffic_type, period = query.data.split("_")
+    period = query.data.replace("period_", "")
+    interface_key = context.user_data.get("interface")
+    interface_eth = context.user_data.get('eth')
 
-    msg = await query.edit_message_text(f"🔄 Mengambil data {traffic_type.upper()} - {period.capitalize()}...")
-
-    result = get_traffic_info(traffic_type, period)
-    if "error" in result:
-        await msg.edit_text(f"❌ Gagal mengambil data:\n{result['error']}")
+    if not interface_key or interface_key not in INTERFACE_MAPPING:
+        await query.edit_message_text("⚠️ Interface tidak valid.")
         return
 
-    image_url = result["image_url"]
-    caption = result["text"]
+    html = api_get_html(interface_eth)
+    if not html:
+        await query.edit_message_text("⚠️ Gagal mengambil data dari server.")
+        return
 
-    await context.bot.send_photo(
-        chat_id=update.effective_chat.id,
-        photo=image_url,
-        caption=caption
+    result = extract_traffic_for_interface(html, interface_key, period)
+    if not result:
+        await query.edit_message_text("⚠️ Grafik tidak ditemukan.")
+        return
+
+    full_url = result['image_url']
+    if full_url.startswith('/'):
+        full_url = API_BASE_URL.replace("/api", "") + full_url
+    elif not full_url.startswith("http"):
+        full_url = API_BASE_URL.replace("/api", "") + '/' + full_url
+
+    caption = (
+        f"*{period.title()} - {interface_key.upper()}*\n"
+        f"📈 Max In: `{result['in_max']}` | Max Out: `{result['out_max']}`\n"
+        f"📊 Avg In: `{result['in_avg']}` | Avg Out: `{result['out_avg']}`\n"
+        f"📉 Current In: `{result['in_cur']}` | Current Out: `{result['out_cur']}`"
+    )
+
+    await query.message.reply_photo(
+        photo=full_url,
+        caption=caption,
+        parse_mode="Markdown"
     )

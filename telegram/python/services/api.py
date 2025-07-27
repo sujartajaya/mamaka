@@ -49,13 +49,42 @@ def api_get_html(endpoint, params=None):
     except Exception as e:
         return None
 
-def extract_traffic_image_url(html_text):
+def extract_traffic_for_interface(html_text, interface_key, period_name):
     soup = BeautifulSoup(html_text, "html.parser")
-    # Misal ambil image pertama dari tag <img>
-    img_tag = soup.find("img")
-    if img_tag and "src" in img_tag.attrs:
-        return img_tag["src"]
+    boxes = soup.find_all("div", class_="box")
+
+    for box in boxes:
+        title_tag = box.find("h3")
+        if not title_tag:
+            continue
+
+        title = title_tag.text.strip().lower()
+        if period_name not in title:
+            continue
+
+        # Cari gambar
+        img_tag = box.find("img")
+        image_url = img_tag['src'] if img_tag else ""
+
+        # Cari angka dari tag <p>
+        p_tag = box.find("p")
+        raw_text = p_tag.get_text() if p_tag else ""
+        numbers = re.findall(r"([\d.]+[KMG]?b)", raw_text, re.IGNORECASE)
+
+        try:
+            return {
+                'image_url': image_url,
+                'in_max': numbers[0],
+                'in_avg': numbers[1],
+                'in_cur': numbers[2],
+                'out_max': numbers[3],
+                'out_avg': numbers[4],
+                'out_cur': numbers[5]
+            }
+        except IndexError:
+            return None
     return None
+
 
 def get_traffic_info(interface: str, period: str):
     try:

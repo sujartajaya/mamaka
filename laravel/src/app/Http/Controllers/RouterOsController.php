@@ -446,15 +446,16 @@ class RouterOsController extends Controller
     }
     
 
-    public function fetchHtml($traffic)
+    public function fetchHtml($interface)
     {
-        if ($traffic == 'wan') {
-            $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
-        } else if ($traffic == 'guest') {
-            $url = 'http://222.165.249.230/graphs/iface/VLAN%2D50/';
-        } else if ($traffic == 'boh') {
-            $url = 'http://222.165.249.230/graphs/iface/bridge-vlan-20/';
-        }
+        // if ($interface == 'wan') {
+        //     $url = 'http://222.165.249.230/graphs/iface/ether1/'; // Ganti dengan URL target kamu
+        // } else if ($interface == 'guest') {
+        //     $url = 'http://222.165.249.230/graphs/iface/VLAN%2D50/';
+        // } else if ($interface == 'boh') {
+        //     $url = 'http://222.165.249.230/graphs/iface/bridge-vlan-20/';
+        // }
+        $url = 'http://222.165.249.230/graphs/iface/'.$interface;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // hasil sebagai string

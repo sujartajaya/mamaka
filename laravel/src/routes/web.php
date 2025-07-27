@@ -26,7 +26,7 @@ Route::get('/telegram/csv/useractive',[TelegramController::class,'downloadUserAc
 Route::post('/telegram/mac/binding',[TelegramController::class,'addMaccBinding']);
 Route::get('/token',[TelegramController::class,'getCsrfToken'])->name('get.token');
 Route::post('/telegram/csv/email',[TelegramController::class,'downloadEmail']);
-Route::get('/traffic/get/{traffic}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
+Route::get('/traffic/get/{interface}',[RouterOsController::class,'fetchHtml'])->name('get.traffic');
 /** user admin type */
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/register', function () { return view('user.register');})->name('register');
