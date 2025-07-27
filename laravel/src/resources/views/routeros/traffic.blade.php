@@ -17,11 +17,11 @@
 
     async function loadBoxesFromURL() {
       @if($traffic == 'wan')
-      const url = "{{ route('get.traffic','wan') }}";
+      const url = "{{ route('get.traffic','ether1') }}";
       const imgBaseUrl = 'https://hhe0a4n271h.sn.mynetname.net/graphs/iface/ether1/';
       @endif
       @if($traffic == 'guest')
-      const url = "{{ route('get.traffic','guest') }}";
+      const url = "{{ route('get.traffic','VLAN-50') }}";
       const imgBaseUrl = 'https://hhe0a4n271h.sn.mynetname.net/graphs/iface/VLAN%2D50/';
       @endif
       const output = document.getElementById('output');
