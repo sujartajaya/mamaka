@@ -5,8 +5,8 @@ ARG uid
 # Buat user dan group baru
 RUN groupadd -g $uid $user && \
     useradd -r -u $uid -g $user $user && \
-    mkdir /app && \
-    chown $user:$user /app
+    mkdir /api && \
+    chown $user:$user /api
 
 WORKDIR /api
 
@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Set environment variables
 ENV PATH=/home/$user/.local/bin:$PATH
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/api
 ENV HOME=/home/$user
 
 RUN apt-get update && apt-get install -y \

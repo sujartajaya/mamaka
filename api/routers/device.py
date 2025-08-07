@@ -6,8 +6,9 @@ router = APIRouter()
 
 
 @router.post("/client", response_model=DeviceResponse)
-async def device_client_check(useragents: DeviceCheck):
-    ua = await parse(useragent)
+def device_client_check(useragent: DeviceCheck):
+    ua = parse(useragent.useragent)
+    print(f"Data ua : \n{ua}")
     return {
         "os_client": ua.os.family + " " + ua.os.version_string,
         "browser_client": ua.browser.family + " " + ua.browser.version_string,

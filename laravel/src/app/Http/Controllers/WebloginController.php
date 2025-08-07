@@ -31,9 +31,9 @@ class WebloginController extends Controller
         $mac_add = $data['mac'];
         $guest = Guest::where('mac_add',$mac_add)->first();
         $data_update = [];
-        
+        $api_url = env('API_URL'); 
         /*** penamabhan kode baru untuk mendapatkan user agent client */
-        $usl = "http://localhost:8000/api/device/client";
+        $url = $api_url."/api/device/client";
         $useragent = [
             'useragent' => $data['useragent']
         ];
@@ -45,16 +45,13 @@ class WebloginController extends Controller
         // Jika ingin mengecek status
         if (!$response->failed()) {
             $data_update = $response->json();
+            // echo $data_update['os_client'];
+            // dd($data_update);
         }
 
 
         if ($guest) {
-            // $guest->os_client = $this->getOS();
-            // $guest->browser_client = $this->getBrowser();
-            // $data_update = [
-            //     "os_client" =>  $this->getOS(),
-            //     "browser_client" => $this->getBrowser()
-            // ];
+           
             if ($data_update) $guest->update($data_update);
             // $guest->save();
         }
@@ -69,8 +66,31 @@ class WebloginController extends Controller
     {
         $datareq = $request->all();
         $data = [];
-        $datareq['os_client'] = $this->getOS();
-        $datareq['browser_client'] = $this->getBrowser();
+        
+        $api_url = env('API_URL'); 
+        $url = $api_url."/api/device/client";
+
+        $useragent = [
+            'useragent' => $datareq['useragent']
+        ];
+        
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post($url, $useragent);
+
+        $data_update = [];
+        
+        // Jika ingin mengecek status
+        if (!$response->failed()) {
+            $data_update = $response->json();
+            // dd($data_update);
+            $datareq['os_client'] = $data_update['os_client'];
+            $datareq['browser_client'] = $data_update['browser_client'];
+            $datareq['device_client'] = $data_update['device_client'];
+            $datareq['brand_client'] = $data_update['brand_client'];
+            $datareq['model_client'] = $data_update['model_client'];
+        }
+
 
         $guest = Guest::where('email',$datareq['email'])->first();
         if ($guest) {
@@ -78,9 +98,15 @@ class WebloginController extends Controller
             $data['exist'] = true;
             $data['msg'] = $guest;
             $guest->mac_add = $datareq['mac_add'];
-            $guest->os_client = $this->getOS();
-            $guest->browser_client = $this->getBrowser();
-            $guest->save();
+            if ($data_update) {
+                $guest->os_client = $data_update['os_client'];
+                $guest->browser_client = $data_update['browser_client'];
+                $guest->device_client = $data_update['device_client'];
+                $guest->brand_client = $data_update['brand_client'];
+                $guest->model_client = $data_update['model_client'];
+            }
+           
+            $guest->update();
             return response()->json($data,200);
         }
 

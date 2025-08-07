@@ -16,7 +16,10 @@ class Guest extends Model
         'password',
         'mac_add',
         'os_client',
-        'browser_client'
+        'browser_client',
+        'device_client',
+        'brand_client',
+        'model_client'
     ];
 
     
