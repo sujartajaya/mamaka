@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+
 
 class WebloginController extends Controller
 {
@@ -26,19 +28,34 @@ class WebloginController extends Controller
     public function create(Request $request)
     {
         $data = $request->all();
-
         $mac_add = $data['mac'];
-       
         $guest = Guest::where('mac_add',$mac_add)->first();
+        $data_update = [];
         
+        /*** penamabhan kode baru untuk mendapatkan user agent client */
+        $usl = "http://localhost:8000/api/device/client";
+        $useragent = [
+            'useragent' => $data['useragent']
+        ];
+        
+         $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post($url, $useragent);
+
+        // Jika ingin mengecek status
+        if (!$response->failed()) {
+            $data_update = $response->json();
+        }
+
+
         if ($guest) {
             // $guest->os_client = $this->getOS();
             // $guest->browser_client = $this->getBrowser();
-            $data_update = [
-                "os_client" =>  $this->getOS(),
-                "browser_client" => $this->getBrowser()
-            ];
-            $guest->update($data_update);
+            // $data_update = [
+            //     "os_client" =>  $this->getOS(),
+            //     "browser_client" => $this->getBrowser()
+            // ];
+            if ($data_update) $guest->update($data_update);
             // $guest->save();
         }
         
