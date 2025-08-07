@@ -78,7 +78,7 @@ async def download_guest_date(update: Update, context: ContextTypes.DEFAULT_TYPE
             return
 
         if start_date > end_date:
-            await message.reply_text("Tanggal awal tidak boleh lebih besar dari tanggal akhir.")
+            await message.reply_text("❌ Tanggal awal tidak boleh lebih besar dari tanggal akhir.")
             return
 
         payload = {

@@ -34,6 +34,7 @@ telegram/python/__pycache__/
 telegram/python/handlers/__pycache__/
 telegram/python/*.py[cod]
 telegram/python/$py.class
+telegram/python/services/__pycache__/
 
 # C extensions
 telegram/python/*.so
