@@ -44,6 +44,7 @@ class Country(Base):
     created_at = Column(TIMESTAMP)
     updated_at = Column(TIMESTAMP)
 
+    guests = relationship("Guest", back_populates="country")
 
 class FailedJob(Base):
     __tablename__ = 'failed_jobs'
@@ -154,6 +155,11 @@ class Radacct(Base):
     delegatedipv6prefix = Column(String(45), nullable=False, index=True, server_default=text("''"))
     _class = Column('class', String(64), index=True)
 
+    guest = relationship(
+        "Guest",
+        primaryjoin="foreign(Radacct.username) == Guest.username",
+        back_populates="radaccts"
+    )
 
 class Radcheck(Base):
     __tablename__ = 'radcheck'
@@ -253,8 +259,8 @@ class User(Base):
     email_verified_at = Column(TIMESTAMP)
     password = Column(String(255), nullable=False)
     remember_token = Column(String(100))
-    created_at = Column(TIMESTAMP)
-    updated_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 
 
 class Guest(Base):
@@ -276,4 +282,9 @@ class Guest(Base):
     model_client = Column(String(255))
     device_type = Column(String(255))
 
-    country = relationship('Country')
+    country = relationship("Country", back_populates="guests")
+    radaccts = relationship(
+        "Radacct",
+        primaryjoin="Guest.username == foreign(Radacct.username)",
+        back_populates="guest"
+    )

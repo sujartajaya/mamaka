@@ -22,6 +22,31 @@ class WebloginController extends Controller
         //
     }
 
+    public function guest_data(Request $request)
+    {
+        // $startdate = $request->startdate;
+        // $enddate = $request->enddate;
+        $datareq = $request->all();
+        // $datareq = [
+        //     "startdate" => "2025-08-01",
+        //     "enddate" => "2025-08-08"
+        // ]
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post("http://localhost:8888/api/guests", $datareq);
+
+        // Jika ingin mengecek status
+        if (!$response->failed()) {
+            $data_response = $response->json();
+            
+            dd($data_response);
+        } else {
+            return response()->json(['msg'=>'Error']);
+        }
+
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -212,7 +237,7 @@ class WebloginController extends Controller
         } else $enddate = now();
         
 
-        $sqr = "select guests.id as no, guests.name as name, guests.email as email, guests.username as username, guests.mac_add as mac_add, guests.os_client as os_client, guests.browser_client as browser_client, guests.created_at as created_at, guests.updated_at as updated_at, sum(radacct.acctinputoctets) as byteinput,sum(radacct.acctoutputoctets) as byteoutput, countries.country_name from guests, radacct, countries where guests.username=radacct.username and guests.country_id = countries.id and radacct.acctstarttime >= '".$startdate."' and radacct.acctstarttime < '".$enddate."' group by radacct.username order by guests.created_at asc";
+        $sqr = "select guests.id as no, guests.name as name, guests.email as email, guests.username as username, guests.mac_add as mac_add, guests.os_client as os_client, guests.browser_client as browser_client, guests.device_client as device_client, guests.brand_client as brand_client, guests.model_client as model_client, guests.device_type as device_type, guests.created_at as created_at, guests.updated_at as updated_at, sum(radacct.acctinputoctets) as byteinput,sum(radacct.acctoutputoctets) as byteoutput, countries.country_name from guests, radacct, countries where guests.username=radacct.username and guests.country_id = countries.id and radacct.acctstarttime >= '".$startdate."' and radacct.acctstarttime < '".$enddate."' group by radacct.username order by guests.created_at asc";
 
         $guests = DB::select($sqr);
 
