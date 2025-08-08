@@ -29,3 +29,4 @@ pydantic[email]  # <== Email validator support
 passlib[bcrypt]   # <== Untuk hash password
 python-jose[cryptography]  # <== Untuk JWT token
 user-agents
+sqlacodegen

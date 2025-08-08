@@ -19,7 +19,8 @@ class Guest extends Model
         'browser_client',
         'device_client',
         'brand_client',
-        'model_client'
+        'model_client',
+        "device_type"
     ];
 
     

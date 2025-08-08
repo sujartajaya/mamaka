@@ -7,7 +7,8 @@ class DeviceResponse(BaseModel):
     device_client: Optional[str] = None
     brand_client: Optional[str] = None
     model_client: Optional[str] = None
-
+    device_type: Optional[str] = None
+    
 class DeviceCheck(BaseModel):
     useragent: str
     

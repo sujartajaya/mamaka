@@ -89,6 +89,7 @@ class WebloginController extends Controller
             $datareq['device_client'] = $data_update['device_client'];
             $datareq['brand_client'] = $data_update['brand_client'];
             $datareq['model_client'] = $data_update['model_client'];
+            $datareq['device_type'] = $data_update['device_type'];
         }
 
 
@@ -104,6 +105,7 @@ class WebloginController extends Controller
                 $guest->device_client = $data_update['device_client'];
                 $guest->brand_client = $data_update['brand_client'];
                 $guest->model_client = $data_update['model_client'];
+                $guest->device_type = $data_update['device_type'];
             }
            
             $guest->update();

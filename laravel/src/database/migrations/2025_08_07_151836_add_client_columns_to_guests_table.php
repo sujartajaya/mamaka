@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('guests', function (Blueprint $table) {
-            $table->string('device_client')->nullable()->default(null)->before('created_at');
-            $table->string('brand_client')->nullable()->default(null)->before('created_at');
-            $table->string('model_client')->nullable()->default(null)->before('created_at');
+            $table->string('device_client')->nullable()->default(null);
+            $table->string('brand_client')->nullable()->default(null);
+            $table->string('model_client')->nullable()->default(null);
+            $table->string('device_type')->nullable()->default(null);
         });
     }
 
@@ -24,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('guests', function (Blueprint $table) {
-            $table->dropColumn(['device_client', 'brand_client', 'model_client']);
+            $table->dropColumn(['device_client', 'brand_client', 'model_client','device_type']);
         });
     }
 };

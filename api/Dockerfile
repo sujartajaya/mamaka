@@ -6,7 +6,10 @@ ARG uid
 RUN groupadd -g $uid $user && \
     useradd -r -u $uid -g $user $user && \
     mkdir /api && \
-    chown $user:$user /api
+    mkdir /home/$user && \
+    chown -R $user:$user /api && \
+    chown -R $user:$user /home/$user
+
 
 WORKDIR /api
 
