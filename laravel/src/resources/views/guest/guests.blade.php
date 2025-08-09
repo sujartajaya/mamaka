@@ -26,9 +26,10 @@
                       class="max-w-sm mn-w-[150px] mb-4 p-2 border border-gray-300 rounded"
                     />
                   <button id="submitbtn" type="submit" class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Submit</button>
-                  <button class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" onclick="exportToCSV('guests.csv')">Export</button> 
+                  <button id="downloadCsvBtn" class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Export</button> 
                   </form>
-    </div>    
+    </div>
+    <pre id="result" aria-live="polite"></pre>    
     <div class="overflow-x-auto flex flex-col w-full max-w-wd bg-white rounded-lg shadow-lg justify-center items-center mt-2">
       <table class="min-w-full divide-gray-200 divide-y">
         <thead class="bg-gray-50">
@@ -77,7 +78,61 @@
     const enddate = document.getElementById('enddt').value;
     const data = <?php echo json_encode($data['guests']); ?>;
     const datajson = document.getElementById('datajson').value;
+    const downloadBtn = document.getElementById('downloadCsvBtn');
+    const resultEl = document.getElementById('result');
+    const API_CSV  = '{{env('API_URL')}}/api/guests/export-csv';
+    
+    function validateDates(startVal, endVal) {
+      if (!startVal || !endVal) {
+        resultEl.textContent = 'Isi kedua tanggal terlebih dahulu.';
+        return false;
+      }
+      const startDate = new Date(startVal);
+      const endDate = new Date(endVal);
+      if (startDate > endDate) {
+        resultEl.textContent = 'Start date tidak boleh lebih besar dari end date.';
+        return false;
+      }
+      return true;
+    }
 
+    downloadBtn.addEventListener('click', async () => {
+      resultEl.textContent = '';
+      const startVal = document.getElementById('startdate').value;
+      const endVal = document.getElementById('enddate').value;
+
+      if (!validateDates(startVal, endVal)) return;
+
+      const payload = { startdate: startVal, enddate: endVal };
+
+      try {
+        const res = await fetch(API_CSV, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'{{env('X_API_KEY')}}' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          resultEl.textContent = `Gagal download CSV: ${res.status} ${errText}`;
+          return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `guests_${startVal}_to_${endVal}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        resultEl.textContent = 'Download CSV dimulai.';
+      } catch (err) {
+        resultEl.textContent = 'Request CSV gagal: ' + String(err);
+      }
+    });
 
     if ((startdate === "") || (enddate === "")) { 
       const today = new Date();
@@ -141,37 +196,37 @@
       document.getElementById('nextBtn').disabled = currentPage === Math.ceil(filteredData.length / rowsPerPage);
     }
 
-    function exportToCSV(filename) {
-      // console.log(`data length = ${datajson.length}`);
-      if (datajson.length >= 0) {
-                    const myArr = JSON.parse(datajson);
-                    if (Array.isArray(myArr)) {
-                        let i = 1;
-                        myArr.map(item => {
-                        if (typeof item === 'object' && item !== null) {
-                            item['no'] = i;
-                            }
-                            i=i+1;
-                            return item;
-                         });
-                        // console.log(`is array = ${myArr}`);
-                    } 
-                    const headers = Object.keys(myArr[0]);
-                    const rows = myArr.map(obj =>
-                        headers.map(header =>
-                            `"${obj[header] || ''}"`
-                        ).join(','));
-                    const csvContent = [headers.join(','), ...rows].join('\n');
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = filename;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-        }
-    }
+    // function exportToCSV(filename) {
+    //   // console.log(`data length = ${datajson.length}`);
+    //   if (datajson.length >= 0) {
+    //                 const myArr = JSON.parse(datajson);
+    //                 if (Array.isArray(myArr)) {
+    //                     let i = 1;
+    //                     myArr.map(item => {
+    //                     if (typeof item === 'object' && item !== null) {
+    //                         item['no'] = i;
+    //                         }
+    //                         i=i+1;
+    //                         return item;
+    //                      });
+    //                     // console.log(`is array = ${myArr}`);
+    //                 } 
+    //                 const headers = Object.keys(myArr[0]);
+    //                 const rows = myArr.map(obj =>
+    //                     headers.map(header =>
+    //                         `"${obj[header] || ''}"`
+    //                     ).join(','));
+    //                 const csvContent = [headers.join(','), ...rows].join('\n');
+    //                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    //                 const link = document.createElement('a');
+    //                 link.href = URL.createObjectURL(blob);
+    //                 link.download = filename;
+    //                 link.style.display = 'none';
+    //                 document.body.appendChild(link);
+    //                 link.click();
+    //                 document.body.removeChild(link);
+    //     }
+    // }
 
     document.getElementById('prevBtn').addEventListener('click', () => {
       if (currentPage > 1) {

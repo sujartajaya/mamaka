@@ -1,5 +1,5 @@
 from passlib.hash import bcrypt
-from api.models.models import User
+from api.models.models import User, Guest
 import random
 import string
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,3 +33,19 @@ async def create_unique_token(db) -> str:
 
         if not existing_user:
             return token
+
+async def generate_random_username(db, length: int = 10) -> str:
+    while True:
+        """Buat username random kombinasi huruf besar, kecil, angka."""
+        chars = string.ascii_letters + string.digits
+        username = ''.join(random.choices(chars, k=length))
+        result = await db.execute(select(Guest).where(Guest.username == username))
+        exist_username = result.scalar_one_or_none()
+        if not exist_username:
+            return username
+
+def generate_random_password(length: int = 10) -> str:
+    """Buat password random kombinasi huruf besar, kecil, angka, dan karakter khusus."""
+    special_chars = "!#*&^?<>[]{}/~"
+    chars = string.ascii_letters + string.digits + special_chars
+    return ''.join(random.choices(chars, k=length))

@@ -262,11 +262,13 @@ class User(Base):
     created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
     updated_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 class Guest(Base):
     __tablename__ = 'guests'
 
-    id = Column(CHAR(36), primary_key=True, server_default=text("(uuid())"))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
     country_id = Column(ForeignKey('countries.id', ondelete='CASCADE'), nullable=False, index=True)

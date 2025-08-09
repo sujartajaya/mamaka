@@ -36,8 +36,8 @@
     const resultEl = document.getElementById('result');
     const downloadBtn = document.getElementById('downloadCsvBtn');
 
-    const API_JSON = 'http://localhost:8888/api/guests/';
-    const API_CSV  = 'http://localhost:8888/api/guests/export-csv';
+    const API_JSON = '{{env('API_URL')}}/api/guests/';
+    const API_CSV  = '{{env('API_URL')}}/api/guests/export-csv';
 
     function validateDates(startVal, endVal) {
       if (!startVal || !endVal) {
@@ -67,7 +67,7 @@
       try {
         const res = await fetch(API_JSON, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'45780843-GJOJXKQJ-KO91K2E8' },
+          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'{{env('X_API_KEY')}}' },
           body: JSON.stringify(payload)
         });
 
@@ -95,7 +95,7 @@
       try {
         const res = await fetch(API_CSV, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'45780843-GJOJXKQJ-KO91K2E8' },
+          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'{{env('X_API_KEY')}}' },
           body: JSON.stringify(payload)
         });
 
