@@ -28,3 +28,4 @@ def device_client_check(useragent: DeviceCheck):
         "model_client": ua.device.model,
         "device_type": device_type
     }
+

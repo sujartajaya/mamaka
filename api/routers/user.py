@@ -133,11 +133,14 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     return {"message": "User deleted successfully"}
 
 
+from api.utils.security import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
+
 @router.post("/login", response_model=dict)
 async def login_user(login_data: dict, db: AsyncSession = Depends(get_db)):
     username = login_data.get("username")
     password = login_data.get("password")
-
+    # print(f"DATA :\nUsername = {username}\nPassword = {password}")
     if not username or not password:
         raise HTTPException(status_code=400, detail="Username dan password wajib diisi")
 
@@ -154,6 +157,23 @@ async def login_user(login_data: dict, db: AsyncSession = Depends(get_db)):
 
     # Ambil token dari remember_token yang sudah ada
     if not user.remember_token:
-        raise HTTPException(status_code=500, detail="Token belum dibuat, silakan register ulang")
+        """ Membuat token baru """
+        token = await create_unique_token(db)
+        user.remember_token = token
+        user.updated_at=now()
+        await db.commit()
+        await db.refresh(user)
+    
+        # raise HTTPException(status_code=500, detail="Token belum dibuat, silakan register ulang")
+    to_encode = {
+        "id": user.id,
+        "username": user.username,
+        "role": user.type
+    }
 
-    return {"remember_token": user.remember_token}
+    token = create_access_token(to_encode, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+
+    return {"remember_token": user.remember_token,"token_type": "Bearer", "token": token}
+
+
+

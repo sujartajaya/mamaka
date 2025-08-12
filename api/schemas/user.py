@@ -16,6 +16,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr]
     username: Optional[constr(min_length=3, max_length=50)]
     type: Optional[Literal['admin', 'operator', 'user']]
+    remember_token: Optional[str]
     password: Optional[constr(min_length=6)]
 
 class UserOut(UserBase):

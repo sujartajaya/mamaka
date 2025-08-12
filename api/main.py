@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from api.database.session import engine, Base
 from api.routers.api import api_router
 from fastapi.middleware.cors import CORSMiddleware
+from api.dependencies.middleware import JWTAuthMiddleware
 
 app = FastAPI(title="FastAPI MySQL Docker", version="0.1.0")
 
@@ -13,6 +14,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(JWTAuthMiddleware)
 
 # @app.on_event("startup")
 # async def startup():

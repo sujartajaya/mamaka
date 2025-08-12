@@ -5,6 +5,7 @@ import string
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from api.database.session import get_db
+from api.config.system import settings
 
 def hash_password(password: str) -> str:
     hashed = bcrypt.using(rounds=10).hash(password)
@@ -49,3 +50,92 @@ def generate_random_password(length: int = 10) -> str:
     special_chars = "!#*&^?<>[]{}/~"
     chars = string.ascii_letters + string.digits + special_chars
     return ''.join(random.choices(chars, k=length))
+
+
+
+from datetime import datetime, timedelta
+from typing import Optional
+from jose import JWTError, jwt
+
+SECRET_KEY = settings.SECRET_KEY  # ganti dengan yang aman, simpan di env
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload  # berisi user_id, role, dll
+    except JWTError:
+        return None
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import jwt, JWTError
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from typing import List
+
+from api.database.session import get_db
+from api.models.models import User
+from api.utils.security import SECRET_KEY, ALGORITHM
+
+security = HTTPBearer()
+
+def role_required(allowed_roles: List[str]):
+    """
+    Middleware dependency untuk memvalidasi JWT dan role user.
+    allowed_roles -> daftar role yang diizinkan mengakses endpoint.
+    """
+    async def verify_role(
+        credentials: HTTPAuthorizationCredentials = Depends(security),
+        db: AsyncSession = Depends(get_db)
+    ):
+        token = credentials.credentials
+
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("username")  # disesuaikan dengan token
+            role: str = payload.get("role")
+            # print(f"Hasil cek role:\nUSERNAME = {username}\nRole = {role}")
+            if username is None or role is None:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token tidak valid",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
+        except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token tidak valid atau sudah kedaluwarsa",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # Validasi role
+        if role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Anda tidak memiliki hak akses",
+            )
+
+        # Validasi user di database
+        result = await db.execute(select(User).where(User.username == username))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Pengguna tidak ditemukan",
+            )
+
+        return user  # Bisa dipakai di endpoint
+
+    return verify_role

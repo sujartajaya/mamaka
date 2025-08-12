@@ -11,7 +11,7 @@ from datetime import datetime
 import csv
 import io
 from fastapi.responses import StreamingResponse
-from api.dependecies.middleware import verify_api_key
+from api.dependencies.middleware import verify_api_key
 from api.utils.timezone import now
 
 router = APIRouter()
@@ -203,8 +203,11 @@ async def create_guest(payload: GuestCreate, db: AsyncSession = Depends(get_db))
         "password": password_plain  # hanya ditampilkan sekali
     }
 
+
+from api.utils.security import role_required
+
 @router.get("/")
-async def get_guest(params: GuestRequest = Depends(), db: AsyncSession = Depends(get_db)):
+async def get_guest(params: GuestRequest = Depends(), db: AsyncSession = Depends(get_db), user=Depends(role_required(["admin", "operator","user"]))):
     stmt = select(Guest)
     if params.email:
         stmt = stmt.where(Guest.email == params.email)
