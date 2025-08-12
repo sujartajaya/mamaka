@@ -240,3 +240,41 @@ async def get_guest(params: GuestRequest = Depends(), db: AsyncSession = Depends
             'password': guest.password
         }
     }
+
+
+@router.get("/all", response_model=List[GuestStatsResponse])
+async def get_guests_data(
+    db: Union[Session, AsyncSession] = Depends(get_db),
+    user=Depends(role_required(["admin", "operator","user"]))
+):
+    stmt = (
+        select(
+            models.Guest.name,
+            models.Guest.email,
+            models.Guest.username,
+            models.Guest.mac_add,
+            models.Guest.os_client,
+            models.Guest.browser_client,
+            models.Guest.device_client,
+            models.Guest.brand_client,
+            models.Guest.model_client,
+            models.Guest.device_type,
+            models.Guest.created_at,
+            models.Guest.updated_at,
+            func.sum(models.Radacct.acctinputoctets).label("byteinput"),
+            func.sum(models.Radacct.acctoutputoctets).label("byteoutput"),
+            models.Country.country_name
+        )
+        .join(models.Radacct, models.Guest.username == models.Radacct.username)
+        .join(models.Country, models.Guest.country_id == models.Country.id)
+        .group_by(models.Radacct.username)
+        .order_by(models.Guest.created_at.asc())
+    )
+
+    # Cek apakah session yang dipakai async atau sync
+    if isinstance(db, AsyncSession):
+        result = await db.execute(stmt)
+    else:
+        result = db.execute(stmt)
+
+    return result.all()

@@ -80,12 +80,18 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
         }
     }
 
+from api.utils.security import role_required
 
 # READ ALL USERS
-@router.get("/", response_model=list[UserOut])
-async def get_users(db: AsyncSession = Depends(get_db)):
+@router.get("/")
+async def get_users(
+    db: AsyncSession = Depends(get_db),
+    user=Depends(role_required(["admin", "operator", "user"]))
+):
     result = await db.execute(select(User))
-    return result.scalars().all()
+    users = result.scalars().all()
+    print(f"Ini data usernya:\n{users}")
+    return users
 
 # READ USER BY ID
 @router.get("/{user_id}", response_model=UserOut)

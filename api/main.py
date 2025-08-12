@@ -7,13 +7,19 @@ from api.dependencies.middleware import JWTAuthMiddleware
 
 app = FastAPI(title="FastAPI MySQL Docker", version="0.1.0")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Bisa diubah sesuai domain asal
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# origins = [
+#     "http://localhost:5173",  # React dev server
+#     "http://127.0.0.1:5173",
+#     "*"  # kalau mau izinkan semua origin (hati-hati di production)
+# ]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,  # Bisa diubah sesuai domain asal
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 app.add_middleware(JWTAuthMiddleware)
 
