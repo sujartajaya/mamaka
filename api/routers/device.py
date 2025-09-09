@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from user_agents import parse
 from api.schemas.device import DeviceCheck, DeviceResponse
 

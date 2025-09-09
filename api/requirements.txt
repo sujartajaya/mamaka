@@ -26,7 +26,11 @@ watchgod==0.7
 websockets==10.0
 asyncmy==0.2.7
 pydantic[email]  # <== Email validator support
+bcrypt==3.2.2
 passlib[bcrypt]   # <== Untuk hash password
 python-jose[cryptography]  # <== Untuk JWT token
 user-agents
 sqlacodegen
+librouteros
+httpx[http2]
+pycurl

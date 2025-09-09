@@ -290,3 +290,42 @@ class Guest(Base):
         primaryjoin="Guest.username == foreign(Radacct.username)",
         back_populates="guest"
     )
+
+     # relasi ke ClientDevice
+    client_devices = relationship(
+        "ClientDevice",
+        back_populates="guest",
+        primaryjoin="Guest.username == foreign(ClientDevice.username)"
+    )
+
+    # Relasi ke ClientDevice (manual pakai primaryjoin)
+    devices = relationship(
+        "ClientDevice",
+        primaryjoin="Guest.username==foreign(ClientDevice.username)",
+        back_populates="guest",
+        viewonly=True
+    )
+
+
+class ClientDevice(Base):
+    __tablename__ = "client_devices"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    username = Column(String(255), nullable=False)
+    mac_add = Column(String(255), nullable=True)
+    os_client = Column(String(255), nullable=True)
+    browser_client = Column(String(255), nullable=True)
+    device_client = Column(String(255), nullable=True)
+    brand_client = Column(String(255), nullable=True)
+    model_client = Column(String(255), nullable=True)
+    device_type = Column(String(255), nullable=True)
+    created_at = Column(TIMESTAMP, nullable=True, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at = Column(TIMESTAMP, nullable=True, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+
+    # relasi ke Guest
+    guest = relationship(
+        "Guest",
+        primaryjoin="foreign(ClientDevice.username)==Guest.username",
+        back_populates="devices",
+        viewonly=True
+    )

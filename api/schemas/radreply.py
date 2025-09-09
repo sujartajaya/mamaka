@@ -2,7 +2,7 @@
 from pydantic import BaseModel, constr
 from typing import Optional
 
-class RadcheckCreate(BaseModel):
+class RadreplyCreate(BaseModel):
     username: constr(min_length=1, max_length=64)
     attribute: constr(min_length=1, max_length=64)
     op: constr(min_length=1, max_length=2) = "=="
@@ -11,7 +11,7 @@ class RadcheckCreate(BaseModel):
     class Config:
         orm_mode = True
 
-class RadcheckResponse(BaseModel):
+class RadreplyResponse(BaseModel):
     id: Optional[int] = None
     username: Optional[str] = None
     attribute: Optional[str] = None

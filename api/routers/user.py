@@ -179,7 +179,7 @@ async def login_user(login_data: dict, db: AsyncSession = Depends(get_db)):
 
     token = create_access_token(to_encode, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
-    return {"remember_token": user.remember_token,"token_type": "Bearer", "token": token}
+    return {"user_id":user.id, "remember_token": user.remember_token,"token_type": "Bearer", "token": token}
 
 
 

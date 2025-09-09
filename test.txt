@@ -3,7 +3,7 @@ api/
   │     ├── __init__.py   
   │     ├── base.py    
   │     └── session.py     
-  ├── dependecies/
+  ├── dependencies/
   │     ├── __init__.py   
   │     └── middleware.py     
   ├── models/
