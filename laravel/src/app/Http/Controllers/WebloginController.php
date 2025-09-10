@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Guest;
 use App\Models\Radcheck;
+use App\Models\ClientDevice;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use DB;
@@ -75,10 +76,13 @@ class WebloginController extends Controller
         }
 
 
-        if ($guest) {
+        if (!$guest) {
+
+            $guest = Guest::join('client_devices', 'guests.username', '=', 'client_devices.username')
+                ->where('client_devices.mac_add', $mac_add)
+                ->select('guests.name', 'guests.username', 'guests.password')
+                ->first();
            
-            if ($data_update) $guest->update($data_update);
-            // $guest->save();
         }
         
         return view('weblogin.loginv2',compact('data','guest'));
@@ -123,17 +127,21 @@ class WebloginController extends Controller
             $data['error'] = false;
             $data['exist'] = true;
             $data['msg'] = $guest;
-            $guest->mac_add = $datareq['mac_add'];
-            if ($data_update) {
-                $guest->os_client = $data_update['os_client'];
-                $guest->browser_client = $data_update['browser_client'];
-                $guest->device_client = $data_update['device_client'];
-                $guest->brand_client = $data_update['brand_client'];
-                $guest->model_client = $data_update['model_client'];
-                $guest->device_type = $data_update['device_type'];
-            }
-           
-            $guest->update();
+            $data_update['mac_add'] =  $datareq['mac_add'];
+            $data_update['username'] = $guest->username;
+            $device = ClientDevice::create($data_update);
+
+            // $guest->mac_add = $datareq['mac_add'];
+            // if ($data_update) {
+            //     $guest->os_client = $data_update['os_client'];
+            //     $guest->browser_client = $data_update['browser_client'];
+            //     $guest->device_client = $data_update['device_client'];
+            //     $guest->brand_client = $data_update['brand_client'];
+            //     $guest->model_client = $data_update['model_client'];
+            //     $guest->device_type = $data_update['device_type'];
+            // }
+            // $guest->update();
+            
             return response()->json($data,200);
         }
 
