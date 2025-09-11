@@ -98,49 +98,57 @@
 
     /** start download btn */
     downloadBtn.addEventListener('click', async (event) => {
-      event.preventDefault(); // cegah form submit reload
+        event.preventDefault(); // cegah form submit
+        resultEl.textContent = '';
 
-      resultEl.textContent = '';
-      const startVal = document.getElementById('startdate').value;
-      const endVal = document.getElementById('enddate').value;
+        const startVal = document.getElementById('startdate').value;
+        const endVal = document.getElementById('enddate').value;
 
-      if (!validateDates(startVal, endVal)) return;
+        if (!validateDates(startVal, endVal)) return;
 
-      const payload = { startdate: startVal, enddate: endVal };
+        const payload = { startdate: startVal, enddate: endVal };
 
-      try {
-        const res = await fetch(API_CSV, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'text/csv', // penting, biar browser tahu ini CSV
-            'X-API-KEY': '{{ env('X_API_KEY') }}'
-          },
-          body: JSON.stringify(payload)
-        });
+        // Ubah tampilan tombol jadi "loading"
+        downloadBtn.disabled = true;
+        const originalText = downloadBtn.textContent;
+        downloadBtn.textContent = 'Exporting...';
 
-        if (!res.ok) {
-          const errText = await res.text();
-          resultEl.textContent = `Gagal download CSV: ${res.status} ${errText}`;
-          return;
+        try {
+          const res = await fetch(API_CSV, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'text/csv',
+              'X-API-KEY': '{{ env('X_API_KEY') }}'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            const errText = await res.text();
+            resultEl.textContent = `Gagal download CSV: ${res.status} ${errText}`;
+            return;
+          }
+
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `guests_${startVal}_to_${endVal}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+
+          resultEl.textContent = '✅ Download CSV dimulai.';
+        } catch (err) {
+          resultEl.textContent = '❌ Request CSV gagal: ' + String(err);
+        } finally {
+          // kembalikan tombol ke normal
+          downloadBtn.disabled = false;
+          downloadBtn.textContent = originalText;
         }
-
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `guests_${startVal}_to_${endVal}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-
-        resultEl.textContent = 'Download CSV dimulai.';
-      } catch (err) {
-        resultEl.textContent = 'Request CSV gagal: ' + String(err);
-      }
     });
-
     /** end download btn */
     if ((startdate === "") || (enddate === "")) { 
       const today = new Date();
