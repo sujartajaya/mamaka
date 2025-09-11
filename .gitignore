@@ -54,3 +54,4 @@ telegram/python/botenv/
 
 # Installer logs
 telegram/python/pip-log.txt
+nginx/certbot/etc/acmedns.json

@@ -26,7 +26,7 @@
                       class="max-w-sm mn-w-[150px] mb-4 p-2 border border-gray-300 rounded"
                     />
                   <button id="submitbtn" type="submit" class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Submit</button>
-                  <button id="downloadCsvBtn" class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Export</button> 
+                  <button id="downloadCsvBtn" type="button" class="max-w-sm mn-w-[150px] p-2 text-gray-900 bg-gradient-to-r from-blue-200 via-blue-400 to-blue-500 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Export</button> 
                   </form>
     </div>
     <pre id="result" aria-live="polite"></pre>    
@@ -96,7 +96,10 @@
       return true;
     }
 
-    downloadBtn.addEventListener('click', async () => {
+    /** start download btn */
+    downloadBtn.addEventListener('click', async (event) => {
+      event.preventDefault(); // cegah form submit reload
+
       resultEl.textContent = '';
       const startVal = document.getElementById('startdate').value;
       const endVal = document.getElementById('enddate').value;
@@ -108,7 +111,11 @@
       try {
         const res = await fetch(API_CSV, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-API-KEY':'{{env('X_API_KEY')}}' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'text/csv', // penting, biar browser tahu ini CSV
+            'X-API-KEY': '{{ env('X_API_KEY') }}'
+          },
           body: JSON.stringify(payload)
         });
 
@@ -134,6 +141,7 @@
       }
     });
 
+    /** end download btn */
     if ((startdate === "") || (enddate === "")) { 
       const today = new Date();
       const year = today.getFullYear();
