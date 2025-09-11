@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $query->where('name', 'LIKE', "%$search%")->orWhere('email','LIKE',"%$search%")->orWhere('username','LIKE',"%$search%")->orWhere('type','LIKE',"%$search%");
     }
+
+    // tambahkan ini:
+    public function setRememberToken($value)
+    {
+        // jangan lakukan apa-apa supaya tidak diubah otomatis
+    }
 }
