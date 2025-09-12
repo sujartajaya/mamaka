@@ -36,16 +36,17 @@ router = APIRouter()
 #     await db.commit()
 #     await db.refresh(new_user)
 #     return new_user
+from api.utils.security import role_required
 
 @router.post("/")
-async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
+async def register(newuser: UserCreate, db: AsyncSession = Depends(get_db), user=Depends(role_required(["admin", "operator", "user"]))):
     # Cek username
-    result = await db.execute(select(User).where(User.username == user.username))
+    result = await db.execute(select(User).where(User.username == newuser.username))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Username sudah digunakan")
 
     # Cek email
-    result = await db.execute(select(User).where(User.email == user.email))
+    result = await db.execute(select(User).where(User.email == newuser.email))
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email sudah digunakan")
 
@@ -53,11 +54,11 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     token = await create_unique_token(db)
 
     new_user = User(
-        name=user.name,
-        username=user.username,
-        email=user.email,
-        type=user.type,
-        password=hash_password(user.password),
+        name=newuser.name,
+        username=newuser.username,
+        email=newuser.email,
+        type=newuser.type,
+        password=hash_password(newuser.password),
         remember_token=token,
         created_at=now(),
         updated_at=now()
@@ -80,7 +81,7 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
         }
     }
 
-from api.utils.security import role_required
+# from api.utils.security import role_required
 
 # READ ALL USERS
 @router.get("/")
