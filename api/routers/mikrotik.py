@@ -183,6 +183,13 @@ async def get_interfaces(request: Request, user=Depends(role_required(["admin"])
     return {"interfaces": interfaces}
 
 
+@router.get("/active/users")
+async def get_interfaces(request: Request, user=Depends(role_required(["admin"]))):
+    api = request.state.mikrotik
+    users = await mikrotik_cmd(api, "/ip/hotspot/active/print")
+    return {"users": users}
+
+
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 import pycurl
