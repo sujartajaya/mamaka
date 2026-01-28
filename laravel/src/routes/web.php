@@ -10,7 +10,7 @@ use App\Http\Controllers\TelegramController;
 
 Route::get('/', function () {return view('home.home');})->name('home');
 Route::get('/os', [GuestController::class,'index']);
-Route::get('/web/login', function () { return redirect('https://ovolohotels.com/mamaka/long-stay/?gad_source=1&gad_campaignid=10952323866&gbraid=0AAAAADv4kheTZBXGJ3XMD38kkB7ImgCQD&gclid=Cj0KCQjwjdTCBhCLARIsAEu8bpI54UUiTSvQEVr5cIV1WbWTi7Cz5CuVRrphyl-Xlx3sKDEYi9eqx6oaAiglEALw_wcB');});
+Route::get('/web/login', function () { return redirect('https://mamakahotels.com');});
 
 Route::get('/web/countries', [CountryController::class,'show'])->name('country');
 Route::post('/web/login',[WebloginController::class,'create'])->name('weblogin');
@@ -70,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout',[UserController::class,'logout'])->name('logout');
 });
 /** testing */
-// Route::get('/testpage', function () { return view('test.tablev5');});
+// Route::get('/testpage', function () { $guest= ""; $data['error'] = "Test error"; $data['useragent']="Test user agent"; $data['chap-id']="chap";$data['chap-challenge']="challange"; return view('weblogin.loginv4' ,compact('data','guest'));});
 // Route::get('/testusers', function () { return view('user.users');});
 // Route::get('/testguest',[GuestController::class,'displaydata']);
 // Route::get('/testgetusers', [UserController::class,'getUsers']);

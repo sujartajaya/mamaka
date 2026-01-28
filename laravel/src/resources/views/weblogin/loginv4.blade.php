@@ -16,7 +16,7 @@
         <h2 class="text-2xl font-bold mt-2">Let's Connect!</h2>
         
         <div class="my-4 flex justify-center">
-            <img src="{{ route('home') }}/logo.svg" alt="Kuta Social Club" width="200" heigth="200">
+            <img src="{{ route('home') }}/mamaka-new-logo.png" alt="Kuta Social Club" width="200" heigth="200">
         </div>
 
         <p class="text-sm font-semibold">FREE INTERNET ACCESS</p>
@@ -39,7 +39,7 @@
         <div class="mt-4 space-y-2 text-sm">
             <p>☎ +62 811 3810 0032</p>
             <p>📷 mamakabali</p>
-            <p>🌐 mamakabyoovolo.com</p>
+            <p>🌐 mamakahotels.com</p>
         </div>
     </div>
 
