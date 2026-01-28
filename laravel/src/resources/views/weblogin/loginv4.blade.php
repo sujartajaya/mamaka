@@ -21,7 +21,7 @@
 
         <p class="text-sm font-semibold">FREE INTERNET ACCESS</p>
         <p class="text-xs mt-2 px-2" id="welcomeinfo" >
-            <?php if ($guest) { ?>  <b>Welcome back {{ $guest['name'] }}</b><?php } else {?>By clicking the "Fill Form" button, you consent to receive marketing, promotional messages and information about Kuta Social Club and its affiliated hotel network (Ovolo, By Ovolo Collective). You may opt out of communications at any time. All data obtained is subject to the Privacy Policy.<?php } ?>
+            <?php if ($guest) { ?>  <b>Welcome back {{ $guest['name'] }}</b><?php } else {?>By clicking the "Fill Form" button, you consent to receive marketing, promotional messages and information about Kuta Social Club and Mamaka Bali. You may opt out of communications at any time. All data obtained is subject to the Privacy Policy.<?php } ?>
         </p>
 
         <button id="openModal" class="bg-teal-400 text-indigo-900 font-bold px-6 py-2 rounded-lg mt-4 w-full <?php if ($guest) { echo "hidden"; } ?>">Fill Form</button>
