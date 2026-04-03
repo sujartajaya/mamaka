@@ -317,6 +317,47 @@ async def get_guest(params: GuestRequest = Depends(), db: AsyncSession = Depends
     }
 
 
+""" 
+#########################################################
+Mendapatkan data guest dengan parameter mac address
+#########################################################
+"""
+
+@router.get("/mac/{mac_add}", response_model=GuestStatsResponse)
+async def get_guest_by_mac(
+    mac_add: str,
+    db: AsyncSession = Depends(get_db),
+    # user=Depends(role_required(["admin", "operator", "user"]))
+):
+    stmt = select(Guest).where(Guest.mac_add == mac_add)
+    result = await db.execute(stmt)
+    guest = result.scalars().first()
+    
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest tidak ditemukan")
+    
+    return guest
+
+""" 
+#########################################################
+Mendapatkan data guest dengan parameter email
+#########################################################
+"""
+
+@router.get("/email")
+async def get_guest_by_email(
+    email: str,  # otomatis jadi query parameter
+    db: AsyncSession = Depends(get_db),
+):
+    stmt = select(Guest).where(Guest.email == email)
+    result = await db.execute(stmt)
+    guest = result.scalars().first()
+    
+    if not guest:
+        raise HTTPException(status_code=404, detail="Guest tidak ditemukan")
+    
+    return guest
+
 # @router.get("/all", response_model=List[GuestStatsResponse])
 # async def get_guests_data(
 #     db: Union[Session, AsyncSession] = Depends(get_db),

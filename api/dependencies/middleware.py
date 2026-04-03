@@ -73,6 +73,8 @@ from api.utils.security import verify_token
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # pola regex untuk bypass
+        path = request.url.path
+        print(f"DEBUG PATH: '{path}'")  # tambah ini sementara
         open_patterns = [
             r"^/api/users/login$",
             r"^/api/users/register$",
@@ -81,6 +83,8 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
             r"^/openapi.json$",
             r"^/api/device/client$",
             r"^/api/guests/export-csv$",
+            r"^/api/guests/mac/[^/]+$",   # ✅ benar
+            r"^/api/guests/email$", # ✅ bypass email
             r"^/api/client-devices.*$",   # semua path mulai dengan /api/client-devices
         ]
 
