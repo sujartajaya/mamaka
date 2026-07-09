@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Service Extension Status - Media Link</title>
+        <style>
+            /* Reset & Base Layout */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Segoe UI", Arial, sans-serif;
+            }
+            body {
+                background-color: #2b7fff; /* Mengikuti warna latar belakang biru dari screenshot */
+                color: #ffffff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 20px;
+                text-align: center;
+            }
+            .container {
+                max-width: 700px;
+                width: 100%;
+                padding: 40px 20px;
+            }
+            h1 {
+                font-size: 42px;
+                font-weight: 700;
+                letter-spacing: 2px;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+            }
+            .subtitle {
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 40px;
+                opacity: 0.9;
+            }
+
+            /* Card Informasi Status */
+            .status-card {
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 16px;
+                padding: 35px;
+                margin-bottom: 50px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+            .status-badge {
+                display: inline-block;
+                background-color: #28a745; /* Warna hijau indikator sukses/aktif */
+                color: white;
+                padding: 6px 20px;
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 25px;
+                box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            }
+            .info-line {
+                font-size: 18px;
+                margin-bottom: 12px;
+                line-height: 1.6;
+            }
+            .info-line strong {
+                color: #fff;
+            }
+            .date-range {
+                font-size: 20px;
+                font-weight: 600;
+                background: rgba(255, 255, 255, 0.2);
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 8px;
+                margin-top: 15px;
+                letter-spacing: 0.5px;
+            }
+
+            /* Bagian Footer Mengikuti Contoh Screenshot */
+            .dev-by {
+                font-size: 14px;
+                opacity: 0.8;
+                margin-bottom: 8px;
+            }
+            .logo-placeholder {
+                font-weight: 800;
+                font-size: 18px;
+                letter-spacing: 1.5px;
+                margin-bottom: 40px;
+                text-transform: uppercase;
+            }
+            .footer-text {
+                font-size: 13px;
+                opacity: 0.7;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo-placeholder">
+                <img
+                    src="../mamaka-new-logo.png"
+                    alt="Logo"
+                    width="50%"
+                    height="50%"
+                />
+                <div class="subtitle">Hotspot Service Renewal</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-badge">Active</div>
+                <div class="info-line">
+                    Your <strong>Hotspot Service</strong> has been successfully
+                    extended.
+                </div>
+                <div class="info-line">Validity Period:</div>
+                <div class="date-range">July 1, 2026 &mdash; June 30, 2027</div>
+            </div>
+
+            <div class="dev-by">Developed by</div>
+            <div class="logo-placeholder">
+                <img
+                    src="../medialink1.png"
+                    alt="Logo"
+                    width="50"
+                    height="50"
+                />
+            </div>
+
+            <div class="footer-text">
+                &copy; datapratama.net 2025 All rights reserved.
+            </div>
+        </div>
+    </body>
+</html>

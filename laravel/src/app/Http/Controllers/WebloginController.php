@@ -100,7 +100,9 @@ class WebloginController extends Controller
         $url = $api_url."/api/device/client";
 
         $useragent = [
-            'useragent' => $datareq['useragent']
+            // 'useragent' => $datareq['useragent']
+            'useragent' => $request->header('User-Agent')
+
         ];
         
         $response = Http::withHeaders([

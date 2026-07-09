@@ -86,6 +86,7 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
             r"^/api/guests/mac/[^/]+$",   # ✅ benar
             r"^/api/guests/email$", # ✅ bypass email
             r"^/api/client-devices.*$",   # semua path mulai dengan /api/client-devices
+            r"^/api/service-renewals.*$",   # semua path mulai dengan /api/service-renewals
         ]
 
         path = request.url.path

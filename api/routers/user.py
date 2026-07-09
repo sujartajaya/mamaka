@@ -39,7 +39,10 @@ router = APIRouter()
 from api.utils.security import role_required
 
 @router.post("/")
-async def register(newuser: UserCreate, db: AsyncSession = Depends(get_db), user=Depends(role_required(["admin", "operator", "user"]))):
+async def register(
+    newuser: UserCreate, db: AsyncSession = Depends(get_db), 
+    user=Depends(role_required(["admin", "operator", "user"]))
+    ):
     # Cek username
     result = await db.execute(select(User).where(User.username == newuser.username))
     if result.scalar_one_or_none():

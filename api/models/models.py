@@ -1,11 +1,30 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, CHAR, Column, DateTime, Enum, ForeignKey, Integer, String, TIMESTAMP, Text, text
+from sqlalchemy import BigInteger, CHAR, Column, DateTime, Enum, ForeignKey, Integer, String, TIMESTAMP, Text, text, Date, Numeric
 from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, MEDIUMTEXT, TIMESTAMP, TINYINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import date, datetime
+from decimal import Decimal
+from typing import Optional
 
 Base = declarative_base()
 metadata = Base.metadata
+
+class ServiceRenewalModel(Base):
+    __tablename__ = "service_renewals"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    service_code = Column(String(255), unique=True, nullable=False)
+    service_name = Column(String(255), nullable=False)
+    service_description = Column(Text, nullable=False)
+    service_price = Column(Numeric(10, 2), nullable=False)
+    service_start_date = Column(Date, nullable=False)
+    service_end_date = Column(Date, nullable=False)
+    service_status = Column(String(255), nullable=False)
+    # SEKARANG OTOMATIS DILEVEL PYTHON/SQLALCHEMY
+    created_at = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 
 class Cache(Base):
